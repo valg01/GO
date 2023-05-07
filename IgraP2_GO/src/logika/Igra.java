@@ -3,6 +3,8 @@ package logika;
 import java.util.LinkedList;
 import java.util.List;
 
+import splosno.Poteza;
+
 public class Igra {
 	
 	public static int velikost = 9;
@@ -20,7 +22,7 @@ public class Igra {
 				grid.mreza[i][j] = null;
 			}
 		}
-		igralecNaPotezi = Igralec.black;
+		igralecNaPotezi = Igralec.BLACK;
 	}
 	
 	public Igralec naPotezi() {
@@ -43,4 +45,24 @@ public class Igra {
 		return ps;
 	}
 	
+	public boolean odigraj(Poteza poteza) {
+		if (grid.mreza[poteza.x()][poteza.y()] == null) return true;
+		return false;
+	}
+	
+	public boolean poteza(int x, int y) {
+		Poteza p = new Poteza(x,y);
+		if (!odigraj(p)) return false;
+		else {
+			if (igralecNaPotezi == Igralec.BLACK) {
+				grid.mreza[x][y] = Zeton.BLACK;
+				igralecNaPotezi = Igralec.WHITE;
+			}
+			else {
+				grid.mreza[x][y] = Zeton.WHITE;
+				igralecNaPotezi = Igralec.BLACK;
+			}
+		}
+		return true;
+	}
 }

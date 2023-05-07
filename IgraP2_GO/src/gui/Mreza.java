@@ -10,6 +10,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -48,8 +50,6 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	
 	protected double polmer;
 	
-	private int klikX;
-	private int klikY;
 	private int stevec = 0;
 	
 	public int velikost = Igra.velikost;
@@ -67,15 +67,15 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		barvaPrvega = Color.BLACK;
 		barvaDrugega = Color.WHITE;
-		barvaMreze = Color.GRAY;
+		//barvaMreze = Color.LIGHT_GRAY;
 		barvaRoba = Color.BLACK;
 		
-		polmer = 5;
+		polmer = 20;
 		
 		setPreferredSize(new Dimension(sirina, visina));
-		setBackground(barvaMreze);
+		//setBackground(barvaMreze);
 		
-		//addMouseListener(this);
+		addMouseListener(this);
 		//addMouseMotionListener(this);
 		//addKeyListener(this);
 		setFocusable(true);
@@ -106,6 +106,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 					(int)(i * sirina), (int)((velikost + 2) * sirina));
 			g2.drawLine((int)(2 * sirina), (int)(i * sirina),
 				   (int)((velikost + 2) * sirina), (int)(i * sirina));
+			
 		}
 		
 		for (int i = 0; i <= velikost; i++) {
@@ -125,6 +126,12 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		
 	}
+	
+	/*public /*  List<int[]> tocke(int velikost){
+		List<int[]> iskaneTocke = new ArrayList<int[]>(); //funkcija naredi seznam tock (int[] predstavlja eno tocko pri cemer je 1. komponentna x in 2. komponenta y)
+		double s = Kvadratek();
+		double odmikDesno = getWidth()
+	}*/
 
 	private int round(double d) {
 		return (int) (d + 0.5) ;
@@ -168,8 +175,31 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		double najblizja = polmer + 10;
+		int x = e.getX();
+		int y = e.getY();
+		int najblizjiX = 0;
+		int najblizjiY = 0;
+		double sirina = Kvadratek();
+		for (int i = 2; i < velikost +4 ;i ++) {
+			for (int j = 2; j < velikost + 4; j++) {
+				double razdalja = Math.sqrt((x - i * sirina ) * (x - i * sirina ) + (y - j * sirina ) * (y - j* sirina));
+				if (razdalja < najblizja) {
+					najblizjiX = i-1;
+					najblizjiY = j-1;			
+				}
+			}
+		}
+		if ((najblizjiX != 0 || najblizjiY != 0) && stevec % 2 == 0 && mreza.mreza[najblizjiX][najblizjiY] == null) {
+			mreza.mreza[najblizjiX][najblizjiY] = Zeton.BLACK;
+			stevec++;
+		}
+		else if ((najblizjiX != 0 || najblizjiY != 0) && stevec % 2 == 1 && mreza.mreza[najblizjiX][najblizjiY] == null) {
+			mreza.mreza[najblizjiX][najblizjiY] = Zeton.WHITE;
+			stevec++;
+		}
+		System.out.println(stevec);
+		repaint();
 	}
 
 	@Override

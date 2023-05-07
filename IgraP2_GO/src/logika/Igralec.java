@@ -1,10 +1,10 @@
 package logika;
 
 public enum Igralec {
-	white, black;
+	WHITE, BLACK;
 	
 	public Igralec nasportnik() {
-		return (this == white ? black : white);
+		return (this == WHITE ? BLACK : WHITE);
 	}
 	
 /*  public Polje getPolje() {
@@ -13,6 +13,6 @@ public enum Igralec {
 */	
 	@Override
 	public String toString() {
-		return (this == white ? "Beli" : "Črni");
+		return (this == WHITE ? "Beli" : "Črni");
 	}
 }
