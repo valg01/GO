@@ -101,11 +101,11 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		g.setColor(barvaRoba);
 		g2.setStroke(new BasicStroke((float) (sirina * LINE_WIDTH)));
-		for (int i = 2; i < velikost + 3; i++) {
+		for (int i = 2; i < velikost + 2; i++) {
 			g2.drawLine((int)(i * sirina),(int)(2 * sirina),
-					(int)(i * sirina), (int)((velikost + 2) * sirina));
+					(int)(i * sirina), (int)((velikost + 1) * sirina));
 			g2.drawLine((int)(2 * sirina), (int)(i * sirina),
-				   (int)((velikost + 2) * sirina), (int)(i * sirina));
+				   (int)((velikost + 1) * sirina), (int)(i * sirina));
 			
 		}
 		
