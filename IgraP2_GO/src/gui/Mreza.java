@@ -64,6 +64,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		Graf graf = new Graf();
 		NastaviMrezo();
+		Igra igra = new Igra();
 		
 		barvaPrvega = Color.BLACK;
 		barvaDrugega = Color.WHITE;
