@@ -1,6 +1,6 @@
 package logika;
 
 public enum Zeton {
-	WHITE, BLACK;
+	WHITE, BLACK, NULL;
 	
 }

@@ -1,16 +1,16 @@
 package logika;
 
-public enum Igralec {
+public enum Igralec { //tk ko da bi par konstant si definiru in not daš par možnih vrednosti
 	WHITE, BLACK;
 	
-	public Igralec nasportnik() {
+	public Igralec nasprotnik() {
 		return (this == WHITE ? BLACK : WHITE);
 	}
 	
-/*  public Polje getPolje() {
-		return (this == white ? Polje.white : Polje.black);
+	public Zeton getZeton() {
+		return (this == WHITE ? Zeton.WHITE : Zeton.BLACK);
 	}
-*/	
+	
 	@Override
 	public String toString() {
 		return (this == WHITE ? "Beli" : "Črni");

@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 
 import logika.Graf;
 import logika.Igra;
+import logika.Koordinate;
 import logika.Polje;
 import logika.Zeton;
 
@@ -48,23 +49,27 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	protected Color barvaMreze;
 	protected Color barvaRoba;
 	
+	Igra igra = new Igra(); //dodana igra izven konstruktorja
+	
 	protected double polmer;
 	
-	private int stevec = 0;
+
 	
 	public int velikost = Igra.velikost;
+	public Polje mreza;
 	
 	int presecisceSirina = getWidth() / velikost;
 	int presecisceVisina = getHeight() / velikost;
 	
 	private final static double LINE_WIDTH = 0.04;
 	
-	public Mreza(int visina, int sirina) {
+	public Mreza(int visina, int sirina) { //konstruktor
 		super();
 		
 		Graf graf = new Graf();
-		NastaviMrezo();
-		Igra igra = new Igra();
+		//NastaviMrezo();
+		this.igra = new Igra();
+		mreza = igra.grid;
 		
 		barvaPrvega = Color.BLACK;
 		barvaDrugega = Color.WHITE;
@@ -72,6 +77,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		barvaRoba = Color.BLACK;
 		
 		polmer = 20;
+		
 		
 		setPreferredSize(new Dimension(sirina, visina));
 		//setBackground(barvaMreze);
@@ -83,12 +89,15 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 	}
 	
-	public Polje NastaviMrezo() {
-		Polje mreza = new Polje(velikost);
-		return mreza;
-	}
+	//public Polje NastaviMrezo() {
+	//	Polje mreza = new Polje(velikost);
+	//	return mreza;
+	//}
 	
-	Polje mreza = NastaviMrezo();
+	//Polje mreza = NastaviMrezo();
+	
+	
+	
 	
 	private double Kvadratek() {
 		return Math.min(getWidth(), getHeight()) / (velikost + 4);
@@ -120,13 +129,39 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				}
 				else if (mreza.mreza[i][j] == Zeton.WHITE) {
 					g2.setColor(barvaDrugega);
-					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
+					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));		
 				}
+				if (igra.ujetaGrupa != null) {
+					g2.setColor(Color.RED);
+					 for (Koordinate koord : igra.ujetaGrupa) {
+					    	int x1 = (int) ((koord.getX() + 1) * sirina);
+							int y1 = (int) ((koord.getY() + 1) * sirina);
+					        g.drawOval(round(x1 - polmer), round(y1 - polmer),(int) (2* polmer),(int) (2 * polmer));
+					 }
+					 GlavnoOknoIgre.displayWinMessage(igra.zmagovalec());
+				
+					
+				}
+
 			}
 		}
 		
 		
 	}
+	
+	public void paintCaptured(Graphics g) {
+	    g.setColor(Color.RED);
+	    double sirina = Kvadratek();
+	    for (Koordinate koord : igra.ujetaGrupa) {
+	    	int x = (int) ((koord.getX() + 1) * sirina);
+			int y = (int) ((koord.getY() + 1) * sirina);
+	        g.drawOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
+	    }
+	}
+
+
+	
+	//pobarva objete in konec igre, poglej od justina raispa kk je on nmapisu
 	
 	/*public /*  List<int[]> tocke(int velikost){
 		List<int[]> iskaneTocke = new ArrayList<int[]>(); //funkcija naredi seznam tock (int[] predstavlja eno tocko pri cemer je 1. komponentna x in 2. komponenta y)
@@ -176,6 +211,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		
 		double najblizja = polmer + 10;
 		int x = e.getX();
 		int y = e.getY();
@@ -191,16 +227,14 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				}
 			}
 		}
-		if ((najblizjiX != 0 || najblizjiY != 0) && stevec % 2 == 0 && mreza.mreza[najblizjiX][najblizjiY] == null) {
-			mreza.mreza[najblizjiX][najblizjiY] = Zeton.BLACK;
-			stevec++;
-		}
-		else if ((najblizjiX != 0 || najblizjiY != 0) && stevec % 2 == 1 && mreza.mreza[najblizjiX][najblizjiY] == null) {
-			mreza.mreza[najblizjiX][najblizjiY] = Zeton.WHITE;
-			stevec++;
-		}
-		System.out.println(stevec);
+		System.out.print(igra.stanje);
+		
+		igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		
 		repaint();
+		
+		
+		
 	}
 
 	@Override

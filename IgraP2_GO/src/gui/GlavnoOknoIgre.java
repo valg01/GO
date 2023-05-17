@@ -1,13 +1,14 @@
 package gui;
 
 import java.awt.event.ActionEvent;
+
 import java.awt.event.ActionListener;
 
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
+import javax.swing.*;
+
+import logika.Igralec;
+
+import java.awt.*;
 
 @SuppressWarnings("serial")
 public class GlavnoOknoIgre extends JFrame implements ActionListener {
@@ -25,15 +26,35 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	private JMenuItem VelikostMreze;
 	private JMenuItem barvaPlosce, barvaRoba;
 	
-	
+	private static JLabel winMessageLabel;
 	public GlavnoOknoIgre() {
 		
 		super();
 	
 		this.setTitle("Capture Go");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
+		JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setBounds(0, 0, 1000, 1000); 
+        
 		mreza = new Mreza(1000, 1000);
-		add(mreza);
+		//add(mreza);
+		mreza.setBounds(0, 0, 1000, 1000); 
+		 // Initialize win message label
+        winMessageLabel = new JLabel("", SwingConstants.CENTER);
+
+        // Create a panel to hold both the win message label and the grid
+        JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // Add win message label and grid to the main panel
+        mainPanel.add(winMessageLabel, BorderLayout.NORTH);
+        mainPanel.add(mreza, BorderLayout.CENTER);
+
+        // Add the main panel to the frame
+        this.add(mainPanel);
+        //layeredPane.add(winMessageLabel, JLayeredPane.PALETTE_LAYER);
+
+        //this.add(layeredPane);
 		
 		//menu
 		
@@ -59,7 +80,13 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		barvaPlosce = dodajMenuItem(menu_Nastavitve, "Barva plošče");
 		barvaRoba = dodajMenuItem(menu_Nastavitve, "Barva Roba");
 		
+
 	}
+	
+	public static void displayWinMessage(Igralec igralec) {
+        winMessageLabel.setText("Konec igre, zmaga " + igralec.toString() + "!");
+        winMessageLabel.setVisible(true);
+    }
 	
 	private JMenu dodajMenu(JMenuBar menu_bar, String naslov) {
 		JMenu menu = new JMenu(naslov);

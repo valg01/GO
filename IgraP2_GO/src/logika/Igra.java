@@ -1,10 +1,9 @@
 package logika;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import splosno.Poteza;
@@ -13,11 +12,19 @@ public class Igra {
 	
 	public static int velikost = 9;
 	
+	private int stevec = 0;
+	
 	public static final List<Vrsta> VRSTE = new LinkedList<Vrsta>();
 	
-	private Polje grid;
+	public Polje grid;
+	
+	public Stanje stanje;
 	
 	private Igralec igralecNaPotezi;
+	
+	private List<List<Koordinate>> beleGrupe;
+	private List<List<Koordinate>> crneGrupe;
+	public List<Koordinate> ujetaGrupa;
 	
 	public Igra() {
 		grid = new Polje(velikost);
@@ -37,7 +44,7 @@ public class Igra {
 		return grid;
 	}
 	
-	public List<Koordinate> poteze() {
+	public List<Koordinate> prostaMesta() { //kire koordinate še lahk igraš ps so prosta mesta, pogleda če je null, če je null ga doda
 		LinkedList<Koordinate> ps = new LinkedList<Koordinate>();
 		for (int i = 0; i < velikost; i++) {
 			for (int j = 0; j < velikost; j++) {
@@ -49,334 +56,190 @@ public class Igra {
 		return ps;
 	}
 	
-	public boolean odigraj(Poteza poteza) {
+	public boolean jeVeljavna(Poteza poteza) { //pogleda, če je ta ko ga igraš null, če ne nemorš odigrat
 		if (grid.mreza[poteza.x()][poteza.y()] == null) return true;
 		return false;
 	}
 	
-	public boolean poteza(int x, int y) {
+	
+	public boolean odigraj(int x, int y) {
 		Poteza p = new Poteza(x,y);
-		if (!odigraj(p)) return false;
-		else {
-			if (igralecNaPotezi == Igralec.BLACK) {
-				grid.mreza[x][y] = Zeton.BLACK;
-				igralecNaPotezi = Igralec.WHITE;
-			}
-			else {
-				grid.mreza[x][y] = Zeton.WHITE;
-				igralecNaPotezi = Igralec.BLACK;
-			}
+		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigrap
+		
+		if ((x != 0 || y != 0) && stevec % 2 == 0 && grid.mreza[x][y] == null) {
+			grid.mreza[x][y] = Zeton.BLACK;
+			stevec++;
+		}
+		else if ((x != 0 || y != 0) && stevec % 2 == 1 && grid.mreza[x][y] == null) {
+			grid.mreza[x][y] = Zeton.WHITE;
+			stevec++;
+		}
+		
+		updateGrupe();
+		updateStanje();
+		//System.out.print(zmagovalec());
+		
+		return true;
+	}
+
+	
+	
+
+	
+	public List<Koordinate> najdiSosede(Koordinate koord) {
+        int x = koord.getX();
+        int y = koord.getY();
+        Zeton zeton = grid.mreza[x][y];
+        List<Koordinate> sosedi = new ArrayList<>();
+        //sosedi.add(koord);
+        if (velikost - x > 0 && grid.mreza[x + 1][y] == zeton) {
+            sosedi.add(koord.desna());
+            //System.out.println("v sosedih");
+            //System.out.println(x);
+            //System.out.println(y);
+            //System.out.println(zeton);
+            //System.out.println(grid.mreza[x + 1][y]);
+            //System.out.println();
+        }
+        if (x != 1 && grid.mreza[x - 1][y] == zeton) {
+            sosedi.add(koord.leva());
+        }
+        if (velikost - y > 0 && grid.mreza[x][y + 1] == zeton) {
+            sosedi.add(koord.spodnja());
+        }
+        if (y != 1 && grid.mreza[x][y - 1] == zeton) {
+            sosedi.add(koord.zgornja());
+        }
+        
+        return sosedi;
+    }
+	public boolean imaLiberties(Koordinate koord) {
+        int x = koord.getX();
+        int y = koord.getY();
+
+        if (velikost - x > 0 && grid.mreza[x + 1][y] == null) {
+            return true;
+        }
+        if (x != 1 && grid.mreza[x - 1][y] == null) {
+        	return true;
+        }
+        if (velikost - y > 0 && grid.mreza[x][y + 1] == null) {
+        	return true;
+        }
+        if (y != 1 && grid.mreza[x][y - 1] == null) {
+        	return true;
+        }
+        
+        return false;
+    }
+	
+	public List<Koordinate> grupa(Koordinate koord) {
+	    List<Koordinate> grupa = new ArrayList<>();
+	    grupa.add(koord);
+	    return grupaAux(koord, grupa);
+	}
+
+	private List<Koordinate> grupaAux(Koordinate koord, List<Koordinate> grupa) {
+	    List<Koordinate> sosedi = najdiSosede(koord);
+
+	    for (Koordinate sosed : sosedi) {
+	        if (!grupa.contains(sosed)) {
+	            grupa.add(sosed);
+	            //System.out.println(grupa);
+	            grupa = grupaAux(sosed, grupa);
+	            
+	        }
+	    }
+	    return grupa;
+	}
+
+
+	
+	
+	
+	
+	public void updateGrupe() {
+	    beleGrupe = new ArrayList<>();
+	    crneGrupe = new ArrayList<>();
+
+	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
+	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
+
+	    for (int i = 1; i < velikost; i++) {
+	        for (int j = 1; j < velikost; j++) {
+	            Zeton zeton = grid.mreza[i][j];
+	            List<Koordinate> grup = grupa(new Koordinate(i, j));
+	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
+
+	            if (zeton == zeton.BLACK && !crneSet.contains(grupSet)) {
+	                crneGrupe.add(grup);
+	                crneSet.add(grupSet);
+	            } else if (zeton == zeton.WHITE && !beleSet.contains(grupSet)) {
+	                beleGrupe.add(grup);
+	                beleSet.add(grupSet);
+	            }
+	            
+	        }
+	    }
+	    //System.out.print(crneGrupe);
+	}
+	
+	
+	public boolean ujeta(List<Koordinate> grupa) {
+		for (Koordinate koord : grupa) {
+			if (imaLiberties(koord)) return false;
 		}
 		return true;
 	}
 	
-	public Map<Zeton, int[]> grupiranje(int x, int y) {   		//glede na x in y koordinato bo funkcija dala zeton v grupo zetonov
-		Map<Zeton, int[]> grupa = new HashMap<Zeton, int[]>();
-		if (grid.mreza[x][y] != null) {
-			int[] koor = {x, y};
-			grupa.put(grid.mreza[x][y], koor);
-			while (true) {
-				Map<Zeton, int[]> pomozni = new HashMap<Zeton, int[]>();
-				if (x == 0 && y > 0) {
-					if (grid.mreza[x][y] == grid.mreza[x+1][y]) {
-						int[] koordinate = {x+1, y};
-						grupa.put(grid.mreza[x+1][y], koordinate);
-						pomozni = grupiranje(x+1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					if (grid.mreza[x][y] == grid.mreza[x][y+1]) {
-						int[] koordinate = {x, y+1};
-						grupa.put(grid.mreza[x][y+1], koordinate);
-						pomozni = grupiranje(x, y+1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x][y-1]) {
-						int[] koordinate = {x, y-1};
-						grupa.put(grid.mreza[x][y-1], koordinate);
-						pomozni = grupiranje(x, y-1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-				}
-				else if (x > 0 && y == 0) {
-					if (grid.mreza[x][y] == grid.mreza[x+1][y]) {
-						int[] koordinate = {x+1, y};
-						grupa.put(grid.mreza[x+1][y], koordinate);
-						pomozni = grupiranje(x+1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					if (grid.mreza[x][y] == grid.mreza[x][y+1]) {
-						int[] koordinate = {x, y+1};
-						grupa.put(grid.mreza[x][y+1], koordinate);
-						pomozni = grupiranje(x, y+1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x-1][y]) {
-						int[] koordinate = {x-1, y};
-						grupa.put(grid.mreza[x-1][y], koordinate);
-						pomozni = grupiranje(x-1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-				}
-				else if (x == grid.mreza.length && y > 0) {
-					if (grid.mreza[x][y] == grid.mreza[x-1][y]) {
-						int[] koordinate = {x-1, y};
-						grupa.put(grid.mreza[x-1][y], koordinate);
-						pomozni = grupiranje(x-1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					if (grid.mreza[x][y] == grid.mreza[x][y+1]) {
-						int[] koordinate = {x, y+1};
-						grupa.put(grid.mreza[x][y+1], koordinate);
-						pomozni = grupiranje(x, y+1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x][y-1]) {
-						int[] koordinate = {x, y-1};
-						grupa.put(grid.mreza[x][y-1], koordinate);
-						pomozni = grupiranje(x, y-1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-				}
-				else if (x > 0 && y == grid.mreza[0].length) {
-					if (grid.mreza[x][y] == grid.mreza[x+1][y]) {
-						int[] koordinate = {x+1, y};
-						grupa.put(grid.mreza[x+1][y], koordinate);
-						pomozni = grupiranje(x+1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					if (grid.mreza[x][y] == grid.mreza[x-1][y]) {
-						int[] koordinate = {x-1, y};
-						grupa.put(grid.mreza[x-1][y], koordinate);
-						pomozni = grupiranje(x-1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x][y-1]) {
-						int[] koordinate = {x, y-1};
-						grupa.put(grid.mreza[x][y-1], koordinate);
-						pomozni = grupiranje(x, y-1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-				}
-				else if (x > 0 && y > 0 && x < grid.mreza.length && y < grid.mreza[0].length) {
-					if (grid.mreza[x][y] == grid.mreza[x+1][y]) {
-						int[] koordinate = {x+1, y};
-						grupa.put(grid.mreza[x+1][y], koordinate);
-						pomozni = grupiranje(x+1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					if (grid.mreza[x][y] == grid.mreza[x][y+1]) {
-						int[] koordinate = {x, y+1};
-						grupa.put(grid.mreza[x][y+1], koordinate);
-						pomozni = grupiranje(x, y+1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x][y-1]) {
-						int[] koordinate = {x, y-1};
-						grupa.put(grid.mreza[x][y-1], koordinate);
-						pomozni = grupiranje(x, y-1);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-					
-					if (grid.mreza[x][y] == grid.mreza[x-1][y]) {
-						int[] koordinate = {x-1, y};
-						grupa.put(grid.mreza[x-1][y], koordinate);
-						pomozni = grupiranje(x-1, y);
-						for (Zeton el : pomozni.keySet()) {
-							if (!grupa.containsKey(el) && el != null) grupa.put(el, pomozni.get(el));
-						}
-						
-					}
-				}
-			}
+	public Igralec zmagovalec() {
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (ujeta(grupa)) return Igralec.BLACK;
 		}
-		return grupa;
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (ujeta(grupa)) return Igralec.WHITE;
+		}
+		return null;
 	}
 	
-	public Set<int[]> sosednjaMozna(Map<Zeton, int[]> grupa) {
-		Set<int[]> koordinate = new HashSet<int[]>();
-		for (Zeton zeton : grupa.keySet()) {
-			
-			int x1 = grupa.get(zeton)[0]; 
-			int y1 = grupa.get(zeton)[1];  //prebere x in y koordinate zetona v grupi in nato preverja ali so sosednji prazni (grupiranje je narejeno tako, da ce so iste barve jih tako ali tako da v isto grupo). Če so prazni se lahko tja razširi
-			if (x1 == 0 && y1 == 0) {
-				if (grid.mreza[x1 + 1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1+1] != zeton && grid.mreza[x1][y1 + 1] == null) {
-					int[] koor = {x1, y1+1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 == grid.mreza.length && y1 == grid.mreza[0].length) {
-				if (grid.mreza[x1 - 1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1-1] == null) {
-					int[] koor = {x1, y1-1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 == 0 && y1 == grid.mreza[0].length) {
-				if (grid.mreza[x1 +1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1-1] == null) {
-					int[] koor = {x1, y1-1};
-					koordinate.add(koor);
-				}
-			}
-			else if (y1 == 0 && x1 == grid.mreza.length) {
-				if (grid.mreza[x1 -1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1+1] != zeton && grid.mreza[x1][y1+1] == null) {
-					int[] koor = {x1, y1+1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 == 0 && y1 > 0) {
-				if (grid.mreza[x1 +1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1+1] != zeton && grid.mreza[x1][y1+1] == null) {
-					int[] koor = {x1, y1+1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1 - 1] == null) {
-					int[] koor = {x1, y1 -1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 == grid.mreza.length && y1 > 0) {
-				if (grid.mreza[x1 - 1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1+1] != zeton && grid.mreza[x1][y1 + 1] == null) {
-					int[] koor = {x1, y1+1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1-1] == null) {
-					int[] koor = {x1, y1 -1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 > 0 && y1 == 0) {
-				if (grid.mreza[x1 - 1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1+1] != zeton && grid.mreza[x1][y1 + 1] == null) {
-					int[] koor = {x1, y1+1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1 + 1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-			}
-			else if (x1 > 0 && y1 == grid.mreza.length) {
-				if (grid.mreza[x1 - 1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1 - 1] == null) {
-					int[] koor = {x1, y1-1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1 + 1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-			}
-			else {
-				if (grid.mreza[x1 - 1][y1] != zeton && grid.mreza[x1 - 1][y1] == null) {
-					int[] koor = {x1 - 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1-1] != zeton && grid.mreza[x1][y1 - 1] == null) {
-					int[] koor = {x1, y1-1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1 + 1][y1] != zeton && grid.mreza[x1 + 1][y1] == null) {
-					int[] koor = {x1 + 1, y1};
-					koordinate.add(koor);
-				}
-				if (grid.mreza[x1][y1 + 1] != zeton && grid.mreza[x1][y1 + 1] == null) {
-					int[] koor = {x1, y1 + 1};
-					koordinate.add(koor);
-				}
+	public Stanje updateStanje() {
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (ujeta(grupa)) {
+				ujetaGrupa = grupa;
+				stanje = Stanje.win_black;
+				return Stanje.win_black;
 			}
 		}
-		return koordinate;
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (ujeta(grupa)) {
+				ujetaGrupa = grupa;
+				stanje = Stanje.win_white;
+				return Stanje.win_white;
+			}
+		}
+		
+		if (prostaMesta().isEmpty()) {
+			stanje = Stanje.draw;
+			return Stanje.draw;
+		}
+		stanje = Stanje.in_progress;
+		return Stanje.in_progress;
+		
 	}
 	
-	public boolean konecIgre() {
-		for (int i = 0; i < grid.mreza.length; i++) {
-			for (int j = 0; j < grid.mreza[0].length; j++) {
-				if (grid.mreza[i][j] == null) continue;
-				else {
-					Map<Zeton, int[]> grupa = grupiranje(i,j);
-					Set<int[]> odprte = sosednjaMozna(grupa);
-					if (odprte.isEmpty()) return true;
-				}
-			}
-		}
-		return false;
-	}
+	//public boolean konecIgre()
 }
+
+
+
+
+
+
+
+	   
+
+	
+	
+	
+	
+	

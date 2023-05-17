@@ -1,6 +1,6 @@
 package logika;
 
-public class Polje {
+public class Polje { //polje je mreža 
 	
 	public int velikost;
 	public Zeton[][] mreza;
