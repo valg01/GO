@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BasicStroke;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -20,6 +21,8 @@ import logika.Igra;
 import logika.Koordinate;
 import logika.Polje;
 import logika.Zeton;
+
+import vodja.Vodja;
 
 @SuppressWarnings("serial")
 public class Mreza extends JPanel implements MouseListener, MouseMotionListener, KeyListener  {
@@ -230,6 +233,8 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		System.out.print(igra.stanje);
 		
 		igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		
+		Vodja.igramo();
 		
 		repaint();
 		

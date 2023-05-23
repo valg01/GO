@@ -63,6 +63,16 @@ public class Igra {
 	}
 	
 	
+	public void zamenjajIgralca() {
+		if(igralecNaPotezi == Igralec.BLACK) {
+			igralecNaPotezi = Igralec.WHITE;
+		}
+		
+		else if(igralecNaPotezi == Igralec.WHITE){
+			igralecNaPotezi = Igralec.BLACK;
+		}
+	}
+	
 	public boolean odigraj(int x, int y) {
 		Poteza p = new Poteza(x,y);
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
@@ -70,12 +80,10 @@ public class Igra {
 		if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
 			igralecNaPotezi = Igralec.WHITE;
-			//return true;
 		}
 		else if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.WHITE;
 			igralecNaPotezi = Igralec.BLACK;
-			//return true;
 		}
 		
 		updateGrupe();

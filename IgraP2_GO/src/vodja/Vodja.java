@@ -17,7 +17,7 @@ import inteligenca.Minimax;
 import splosno.Poteza;
 import splosno.KdoIgra;
 
-public class Vodja {	
+public class Vodja {	//povezes igralce s clovekom,racunalnikom
 	
 	public static Map<Igralec,VrstaIgralca> vrstaIgralca;
 	public static Map<Igralec,KdoIgra> kdoIgra;
@@ -49,6 +49,7 @@ public class Vodja {
 				clovekNaVrsti = true;
 				break;
 			case R:
+				clovekNaVrsti = false;
 				igrajRacunalnikovoPotezo ();
 				break;
 			}
