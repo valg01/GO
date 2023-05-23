@@ -23,14 +23,10 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	private JMenuItem igraClovekRacunalnik;
 	private JMenuItem igraRacunalnikRacunalnik;
 	private JMenuItem igraRacunalnikClovek;
-	
-	private JMenu menu_AlgoritemRacunalnika;
-	
+		
 	private JMenuItem menuOdpri, menuShrani, menuZapri;
 	private JMenuItem VelikostMreze;
 	private JMenuItem barvaPlosce, barvaRoba;
-	
-	private JLabel naVrsti;
 	
 	private static JLabel winMessageLabel;
 	
@@ -72,7 +68,6 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		
 		JMenu menuDatoteka = dodajMenu(menu_bar, "Datoteka");
 		JMenu menuNovaIgra = dodajMenu(menu_bar, "Igra");
-		JMenu menuAlgoritemRacunalnika = dodajMenu(menu_bar, "Algoritem računalnika");
 		JMenu menuNastavitve = dodajMenu(menu_bar, "Nastavitve");
 		
 		menuOdpri = dodajMenuItem(menuDatoteka, "Odpri ...");
@@ -89,7 +84,19 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		barvaPlosce = dodajMenuItem(menuNastavitve, "Barva plošče");
 		barvaRoba = dodajMenuItem(menuNastavitve, "Barva Roba");
 		
-		naVrsti = new JLabel();
+		status = new JLabel();
+		status.setFont(new Font(status.getFont().getName(),
+			    status.getFont().getStyle(),
+			    20));
+		//GridBagConstraints status_layout = new GridBagConstraints();
+		//status_layout.gridx = 0;
+		//status_layout.gridy = 1;
+		//status_layout.anchor = GridBagConstraints.CENTER;
+		getContentPane().setLayout(new GridBagLayout());
+		getContentPane().add(status);
+		
+		status.setText("Izberite igro!");
+	
 		
 		
 
@@ -142,6 +149,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			Vodja.igramoNovoIgro();
 			
 		}
+		
 		 else if (objekt == igraRacunalnikClovek) {
 			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
 			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.R); 
@@ -165,26 +173,22 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		
 	}
 	public void osveziGUI() {
-		if (Vodja.igra == null) {
-			naVrsti.setText("Igra ni v teku.");
-		}
-		/*
+		if (Vodja.igra == null) status.setText("Izberi igro");
 		else {
 			switch(Vodja.igra.stanje) {
-			case in_progress: 
-				naVrsti.setText("Na potezi je " + Vodja.igra.naPotezi() + 
-						" - " + Vodja.vrstaIgralca.get(Vodja.igra.naPotezi())); 
+			case draw:
+				status.setText("Neodločeno!");
 				break;
-			case win_black: 
-				naVrsti.setText("Zmagal je ČRNI - " + 
-						Vodja.vrstaIgralca.get(Igralec.BLACK));
+			case win_white:
+				status.setText("Zmagal je beli");
 				break;
-			case win_white: 
-				naVrsti.setText("Zmagal je BELI - " + 
-						Vodja.vrstaIgralca.get(Igralec.WHITE));
+			case win_black:
+				status.setText("Zmagal je črni");
 				break;
+			case in_progress:
+				status.setText("Na potezi je " + Vodja.igra.naPotezi() + " - " + Vodja.vrstaIgralca.get(Vodja.igra.naPotezi()));
 			}
-		} */
+		}
 		mreza.repaint();
 	}
 }

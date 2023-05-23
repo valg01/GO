@@ -1,6 +1,7 @@
 package vodja;
 
 import java.util.Map;
+import java.util.Random;
 
 import javax.swing.SwingWorker;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +29,7 @@ public class Vodja {
 	public static boolean clovekNaVrsti = false;
 		
 	public static void igramoNovoIgro () {
+//		okno = new GlavnoOknoIgre();
 		igra = new Igra ();
 		igramo ();
 	}
@@ -54,33 +56,37 @@ public class Vodja {
 	}
 
 	
+	private static Random random = new Random ();
 	public static Inteligenca racunalnikovaInteligenca = new Minimax(3);
 	
 	public static void igrajRacunalnikovoPotezo() {
-		Igra zacetkaIgra = igra;
-		SwingWorker<Poteza, Void> worker = new SwingWorker<Poteza, Void> () {
+		Igra zacetnaIgra = igra;
+		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void> () {
 			@Override
-			protected Poteza doInBackground() {
-				Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
-				try {TimeUnit.SECONDS.sleep(1);} catch (Exception e) {};
-				return poteza;
+			protected Void doInBackground() {
+				//Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
+				try {TimeUnit.SECONDS.sleep(100);} catch (Exception e) {};
+				return null;
 			}
 			@Override
 			protected void done () {
-				Poteza poteza = null;
-				try {poteza = get();} catch (Exception e) {};
-				if (igra == zacetkaIgra) {
-					igra.odigraj(poteza.x(), poteza.y());
-					igramo ();
-				}
+				if (igra != zacetnaIgra) return;
+				Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
+				igra.odigraj(poteza.x(), poteza.y());
+				igramo ();
 			}
 		};
 		worker.execute();
 	}
 		
 	public static void igrajClovekovoPotezo(Poteza poteza) {
-		if (igra.odigraj(poteza.x(), poteza.y())) clovekNaVrsti = false;
-		igramo ();
+		if (igra.odigraj(poteza.x(), poteza.y()) && clovekNaVrsti) {
+			igra.odigraj(poteza.x(), poteza.y());
+			clovekNaVrsti = false;
+			igramo();
+			
+		}
+
 	}
 
 
