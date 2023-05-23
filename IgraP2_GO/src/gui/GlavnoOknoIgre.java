@@ -3,10 +3,14 @@ package gui;
 import java.awt.event.ActionEvent;
 
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.util.EnumMap;
 
 import javax.swing.*;
 
 import logika.Igralec;
+import vodja.Vodja;
+import vodja.VrstaIgralca;
 
 import java.awt.*;
 
@@ -22,11 +26,16 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	
 	private JMenu menu_AlgoritemRacunalnika;
 	
-	private JMenuItem menu_Odpri, menu_Shrani, menu_Zapri;
+	private JMenuItem menuOdpri, menuShrani, menuZapri;
 	private JMenuItem VelikostMreze;
 	private JMenuItem barvaPlosce, barvaRoba;
 	
+	private JLabel naVrsti;
+	
 	private static JLabel winMessageLabel;
+	
+	private JLabel status;
+	
 	public GlavnoOknoIgre() {
 		
 		super();
@@ -61,24 +70,27 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		JMenuBar menu_bar = new JMenuBar();
 		this.setJMenuBar(menu_bar);
 		
-		JMenu menu_Datoteka = dodajMenu(menu_bar, "Datoteka");
-		JMenu menu_NovaIgra = dodajMenu(menu_bar, "Igra");
-		JMenu menu_AlgoritemRacunalnika = dodajMenu(menu_bar, "Algoritem računalnika");
-		JMenu menu_Nastavitve = dodajMenu(menu_bar, "Nastavitve");
+		JMenu menuDatoteka = dodajMenu(menu_bar, "Datoteka");
+		JMenu menuNovaIgra = dodajMenu(menu_bar, "Igra");
+		JMenu menuAlgoritemRacunalnika = dodajMenu(menu_bar, "Algoritem računalnika");
+		JMenu menuNastavitve = dodajMenu(menu_bar, "Nastavitve");
 		
-		menu_Odpri = dodajMenuItem(menu_Datoteka, "Odpri ...");
-		menu_Shrani = dodajMenuItem(menu_Datoteka, "Shrani ...");
-		menu_Datoteka.addSeparator();
-		menu_Zapri = dodajMenuItem(menu_Datoteka, "Zapri");
+		menuOdpri = dodajMenuItem(menuDatoteka, "Odpri ...");
+		menuShrani = dodajMenuItem(menuDatoteka, "Shrani ...");
+		menuDatoteka.addSeparator();
+		menuZapri = dodajMenuItem(menuDatoteka, "Zapri");
 		
-		igraClovekClovek = dodajMenuItem(menu_NovaIgra, "Človek – človek");
-		igraClovekRacunalnik = dodajMenuItem(menu_NovaIgra, "Človek - Računalnik");
-		igraRacunalnikClovek = dodajMenuItem(menu_NovaIgra,"Računalnik – Človek");
-		igraRacunalnikRacunalnik = dodajMenuItem(menu_NovaIgra, "Računalnik – Računalnik");
+		igraClovekClovek = dodajMenuItem(menuNovaIgra, "Človek – človek");
+		igraClovekRacunalnik = dodajMenuItem(menuNovaIgra, "Človek - Računalnik");
+		igraRacunalnikClovek = dodajMenuItem(menuNovaIgra,"Računalnik – Človek");
+		igraRacunalnikRacunalnik = dodajMenuItem(menuNovaIgra, "Računalnik – Računalnik");
 		
-		VelikostMreze = dodajMenuItem(menu_Nastavitve, "Velikost mreže");
-		barvaPlosce = dodajMenuItem(menu_Nastavitve, "Barva plošče");
-		barvaRoba = dodajMenuItem(menu_Nastavitve, "Barva Roba");
+		VelikostMreze = dodajMenuItem(menuNastavitve, "Velikost mreže");
+		barvaPlosce = dodajMenuItem(menuNastavitve, "Barva plošče");
+		barvaRoba = dodajMenuItem(menuNastavitve, "Barva Roba");
+		
+		naVrsti = new JLabel();
+		
 		
 
 	}
@@ -103,7 +115,77 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		Object objekt = e.getSource();
+		if (objekt == menuOdpri) {
+			JFileChooser dialog = new JFileChooser();
+			int izbira = dialog.showOpenDialog(this);
+			if (izbira == JFileChooser.APPROVE_OPTION) {
+				String ime = dialog.getSelectedFile().getPath();
+
+			}
+		}
+		else if (objekt == menuShrani) {
+			JFileChooser dialog = new JFileChooser();
+			int izbira = dialog.showSaveDialog(this);
+			if (izbira == JFileChooser.APPROVE_OPTION) {
+				String ime = dialog.getSelectedFile().getPath();
+				//polje.graf.shrani(ime);
+			}
+		}
+		else if (objekt == menuZapri) {
+			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			}
+		else if(objekt == igraClovekRacunalnik) {
+			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
+			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.C); 
+			Vodja.vrstaIgralca.put(Igralec.WHITE, VrstaIgralca.R);
+			Vodja.igramoNovoIgro();
+			
+		}
+		 else if (objekt == igraRacunalnikClovek) {
+			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
+			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.R); 
+			Vodja.vrstaIgralca.put(Igralec.WHITE, VrstaIgralca.C);
+			Vodja.igramoNovoIgro();
+			
+		} else if (objekt == igraClovekClovek) {
+			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
+			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.C); 
+			Vodja.vrstaIgralca.put(Igralec.WHITE, VrstaIgralca.C);
+			Vodja.igramoNovoIgro();
+			
+		} else if (objekt == igraRacunalnikRacunalnik) {
+			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
+			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.R); 
+			Vodja.vrstaIgralca.put(Igralec.WHITE, VrstaIgralca.R);
+			Vodja.igramoNovoIgro();
+			
+		}
+		repaint();
 		
 	}
+	public void osveziGUI() {
+		if (Vodja.igra == null) {
+			naVrsti.setText("Igra ni v teku.");
+		}
+		/*
+		else {
+			switch(Vodja.igra.stanje) {
+			case in_progress: 
+				naVrsti.setText("Na potezi je " + Vodja.igra.naPotezi() + 
+						" - " + Vodja.vrstaIgralca.get(Vodja.igra.naPotezi())); 
+				break;
+			case win_black: 
+				naVrsti.setText("Zmagal je ČRNI - " + 
+						Vodja.vrstaIgralca.get(Igralec.BLACK));
+				break;
+			case win_white: 
+				naVrsti.setText("Zmagal je BELI - " + 
+						Vodja.vrstaIgralca.get(Igralec.WHITE));
+				break;
+			}
+		} */
+		mreza.repaint();
+	}
 }
+
