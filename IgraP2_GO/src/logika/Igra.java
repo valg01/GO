@@ -70,12 +70,12 @@ public class Igra {
 		if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
 			igralecNaPotezi = Igralec.WHITE;
-			return true;
+			//return true;
 		}
 		else if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.WHITE;
 			igralecNaPotezi = Igralec.BLACK;
-			return true;
+			//return true;
 		}
 		
 		updateGrupe();
