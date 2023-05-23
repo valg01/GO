@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import splosno.Poteza;
@@ -20,10 +21,10 @@ public class Igra {
 	
 	public Stanje stanje;
 	
-	private Igralec igralecNaPotezi;
+	public Igralec igralecNaPotezi;
 	
-	private List<List<Koordinate>> beleGrupe;
-	private List<List<Koordinate>> crneGrupe;
+	public List<List<Koordinate>> beleGrupe;
+	public List<List<Koordinate>> crneGrupe;
 	public List<Koordinate> ujetaGrupa;
 	
 	public Igra() {
@@ -64,7 +65,7 @@ public class Igra {
 	
 	public boolean odigraj(int x, int y) {
 		Poteza p = new Poteza(x,y);
-		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigrap
+		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
 		if ((x != 0 || y != 0) && stevec % 2 == 0 && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
@@ -78,7 +79,6 @@ public class Igra {
 		updateGrupe();
 		updateStanje();
 		//System.out.print(zmagovalec());
-		
 		return true;
 	}
 
@@ -227,7 +227,17 @@ public class Igra {
 		
 	}
 	
+	public void nakljucnaPoteza() {
+		int max = prostaMesta().size();
+		int i = (int)Math.floor(Math.random() * (max + 1));  //generira naključni indeks 
+		Koordinate koor = prostaMesta().get(i);
+		odigraj(koor.getX(), koor.getY());
+	}
+	
 	//public boolean konecIgre()
+	
+	
+	
 }
 
 
