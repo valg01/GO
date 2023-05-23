@@ -67,13 +67,15 @@ public class Igra {
 		Poteza p = new Poteza(x,y);
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
-		if ((x != 0 || y != 0) && stevec % 2 == 0 && grid.mreza[x][y] == null) {
+		if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
-			stevec++;
+			igralecNaPotezi = Igralec.WHITE;
+			return true;
 		}
-		else if ((x != 0 || y != 0) && stevec % 2 == 1 && grid.mreza[x][y] == null) {
+		else if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.WHITE;
-			stevec++;
+			igralecNaPotezi = Igralec.BLACK;
+			return true;
 		}
 		
 		updateGrupe();

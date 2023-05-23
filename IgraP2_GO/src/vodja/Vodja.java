@@ -64,7 +64,7 @@ public class Vodja {
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void> () {
 			@Override
 			protected Void doInBackground() {
-				//Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
+				Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
 				try {TimeUnit.SECONDS.sleep(100);} catch (Exception e) {};
 				return null;
 			}
