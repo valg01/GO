@@ -34,6 +34,7 @@ public class Igra {
 			}
 		}
 		igralecNaPotezi = Igralec.BLACK;
+		stanje = Stanje.in_progress;
 	}
 	
 	public Igralec naPotezi() {

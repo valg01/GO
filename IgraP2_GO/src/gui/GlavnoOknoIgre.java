@@ -35,6 +35,8 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	public GlavnoOknoIgre() {
 		
 		super();
+		
+		Vodja.okno = this;
 	
 		this.setTitle("Capture Go");
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -85,17 +87,17 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		barvaRoba = dodajMenuItem(menuNastavitve, "Barva Roba");
 		
 		status = new JLabel();
-		status.setFont(new Font(status.getFont().getName(),
-			    status.getFont().getStyle(),
-			    20));
-		//GridBagConstraints status_layout = new GridBagConstraints();
-		//status_layout.gridx = 0;
-		//status_layout.gridy = 1;
-		//status_layout.anchor = GridBagConstraints.CENTER;
-		getContentPane().setLayout(new GridBagLayout());
-		getContentPane().add(status);
-		
+		status.setFont(new Font(status.getFont().getName(),status.getFont().getStyle(),20));
+		GridBagConstraints status_layout = new GridBagConstraints();
+		status_layout.gridx = 0;
+		status_layout.gridy = 1;
+		status_layout.anchor = GridBagConstraints.CENTER;
+		getContentPane().add(status, status_layout);
+				
 		status.setText("Izberite igro!");
+		
+		
+
 	
 		
 		
