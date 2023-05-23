@@ -90,14 +90,30 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		status.setFont(new Font(status.getFont().getName(),
 			    status.getFont().getStyle(),
 			    20));
+		
 		//GridBagConstraints status_layout = new GridBagConstraints();
 		//status_layout.gridx = 0;
 		//status_layout.gridy = 1;
 		//status_layout.anchor = GridBagConstraints.CENTER;
-		getContentPane().setLayout(new GridBagLayout());
-		getContentPane().add(status);
+		
+		//getContentPane().setLayout(new GridBagLayout());
+		//getContentPane().add(status);
 				
-		status.setText("Izberite igro!");
+		//status.setText("Izberite igro!");
+		
+		
+		
+		
+		status = new JLabel("", SwingConstants.CENTER);
+
+        // Create a panel to hold both the win message label and the grid
+        //JPanel mainPanel = new JPanel(new BorderLayout());
+
+        // Add win message label and grid to the main panel
+        mainPanel.add(status, BorderLayout.NORTH);
+
+        // Add the main panel to the frame
+        //this.add(mainPanel);
 		
 		
 
