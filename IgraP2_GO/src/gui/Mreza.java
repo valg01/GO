@@ -76,14 +76,14 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		barvaPrvega = Color.BLACK;
 		barvaDrugega = Color.WHITE;
-		//barvaMreze = Color.LIGHT_GRAY;
+		barvaMreze = new Color(193, 154, 107);
 		barvaRoba = Color.BLACK;
 		
 		polmer = 20;
 		
 		
 		setPreferredSize(new Dimension(sirina, visina));
-		//setBackground(barvaMreze);
+		setBackground(barvaMreze);
 		
 		addMouseListener(this);
 		//addMouseMotionListener(this);
