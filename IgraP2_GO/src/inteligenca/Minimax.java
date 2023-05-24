@@ -5,22 +5,24 @@ import java.util.List;
 import logika.Igra;
 import logika.Igralec;
 import logika.Koordinate;
-import splosno.KdoIgra;
 import splosno.Poteza;
 
-public class Inteligenca extends KdoIgra {
-	
+public class Minimax extends Inteligenca{
 	private static final int ZMAGA = 1000;
 	private static final int PORAZ = -ZMAGA;
 	
-	public Inteligenca () {
-		super("Tim & Val");
-	}
+private int globina;
 	
-	public OcenjenaPoteza minimax(Igra igra, int globina, Igralec igralec) {
+	public Minimax (int globina) {
+		this.globina = globina;
+	}
+
+
+	public OcenjenaPoteza minimax(Igra igra, int globina, Igralec igralec) { //
 		OcenjenaPoteza najboljsa = null;
 		List<Koordinate> mozne = igra.prostaMesta();
-		for (Koordinate k : mozne) {
+		List<Koordinate> verjetne = igra.najboljVerjetne();
+		for (Koordinate k : mozne) { //tu not dama lahk verjetne, treba je izboljsat funkcijo najboljVerjetne, neki ne dela
 			Igra kopija = new Igra();
 			kopija.igralecNaPotezi = igra.igralecNaPotezi;
 			for (int i=0; i < Igra.velikost; i++) {
@@ -45,9 +47,10 @@ public class Inteligenca extends KdoIgra {
 		return najboljsa;
 	}
 	
+	@Override
 	public Poteza izberiPotezo (Igra igra) {
-		OcenjenaPoteza najboljsaPoteza = minimax(igra, 1, igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = minimax(igra, this.globina, igra.naPotezi());
 		return najboljsaPoteza.poteza;	
-	};
-
+	}
+	
 }

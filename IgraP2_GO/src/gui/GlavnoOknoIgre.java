@@ -44,10 +44,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setBounds(0, 0, 1000, 1000); 
         
-		mreza = new Mreza(1000, 1000);
-		//add(mreza);
-		mreza.setBounds(0, 0, 1000, 1000); 
-		 // Initialize win message label
+		
         winMessageLabel = new JLabel("", SwingConstants.CENTER);
 
         // Create a panel to hold both the win message label and the grid
@@ -55,8 +52,18 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 
         // Add win message label and grid to the main panel
         mainPanel.add(winMessageLabel, BorderLayout.NORTH);
+        
+        
+      
+        	
+        
+        mreza = new Mreza(1000, 1000);
+		//add(mreza);
+        mreza.setBounds(0, 0, 1000, 1000); 
+		 // Initialize win message label
         mainPanel.add(mreza, BorderLayout.CENTER);
-
+        
+        
         // Add the main panel to the frame
         this.add(mainPanel);
         //layeredPane.add(winMessageLabel, JLayeredPane.PALETTE_LAYER);

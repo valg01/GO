@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 
 import logika.Graf;
 import logika.Igra;
+import logika.Igralec;
 import logika.Koordinate;
 import logika.Polje;
 import logika.Zeton;
@@ -231,11 +232,22 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				}
 			}
 		}
-		System.out.print(Vodja.igra.stanje);
+		
+		
+		
+		//System.out.print(Vodja.igra.stanje);
 		
 		Vodja.igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
 		
 		Vodja.igramo();
+		
+		System.out.print(Vodja.igra.najboljVerjetne());
+		
+		//Koordinate koord = new Koordinate(3,3);
+		//List<Koordinate> grupa = Vodja.igra.grupa(koord);
+		//System.out.print(Vodja.igra.libertiesGrupa(grupa));
+		//System.out.print(Vodja.igra.stLibertiesIgralec(Igralec.BLACK));
+		
 		
 		repaint();
 		

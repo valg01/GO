@@ -74,6 +74,8 @@ public class Igra {
 	}
 	
 	public boolean odigraj(int x, int y) {
+		System.out.println("v odigraj");
+		System.out.println(this);
 		Poteza p = new Poteza(x,y);
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
@@ -120,7 +122,7 @@ public class Igra {
         if (y != 1 && grid.mreza[x][y - 1] == zeton) {
             sosedi.add(koord.zgornja());
         }
-        
+        //System.out.print(sosedi);
         return sosedi;
     }
 	public boolean imaLiberties(Koordinate koord) {
@@ -142,6 +144,57 @@ public class Igra {
         
         return false;
     }
+	
+	public List<Koordinate> libertiesGrupa(List<Koordinate> grupa) {
+		List<Koordinate> liberties = new ArrayList<>();
+		for (Koordinate koord : grupa) {
+			int x = koord.getX();
+	        int y = koord.getY();
+
+	        if (velikost - x > 0 && grid.mreza[x + 1][y] == null && !liberties.contains(koord.desna()) ) {
+	            liberties.add(koord.desna());
+	        }
+	        if (x != 1 && grid.mreza[x - 1][y] == null && !liberties.contains(koord.leva())) {
+	        	liberties.add(koord.leva());
+	        }
+	        if (velikost - y > 0 && grid.mreza[x][y + 1] == null && !liberties.contains(koord.spodnja())) {
+	        	liberties.add(koord.spodnja());
+	        }
+	        if (y != 1 && grid.mreza[x][y - 1] == null && !liberties.contains(koord.zgornja())) {
+	        	liberties.add(koord.zgornja());
+	        }
+	        
+	        
+		}
+		return liberties;
+	}
+	
+	public List<Koordinate> libertiesIgralec(Igralec igralec) {
+		List<Koordinate> vsiLiberties = new ArrayList<>();
+		if (igralec == Igralec.BLACK) {
+			for (List<Koordinate> grupa : crneGrupe) {
+				for (Koordinate liberti : libertiesGrupa(grupa)) {
+					if (!vsiLiberties.contains(liberti)) {
+						vsiLiberties.add(liberti);
+					}
+				}
+			}
+		}
+		
+	
+		if (igralec == Igralec.WHITE) {
+			for (List<Koordinate> grupa : beleGrupe) {
+				for (Koordinate liberti : grupa) {
+					if (!vsiLiberties.contains(liberti)) {
+						vsiLiberties.add(liberti);
+					}
+				}
+			}
+		}
+		return vsiLiberties;
+	}
+	
+	
 	
 	public List<Koordinate> grupa(Koordinate koord) {
 	    List<Koordinate> grupa = new ArrayList<>();
@@ -175,8 +228,8 @@ public class Igra {
 	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
 	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
 
-	    for (int i = 1; i < velikost; i++) {
-	        for (int j = 1; j < velikost; j++) {
+	    for (int i = 1; i <= velikost; i++) {
+	        for (int j = 1; j <= velikost; j++) {
 	            Zeton zeton = grid.mreza[i][j];
 	            List<Koordinate> grup = grupa(new Koordinate(i, j));
 	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
@@ -246,6 +299,17 @@ public class Igra {
 	
 	//public boolean konecIgre()
 	
+	public List<Koordinate> najboljVerjetne(){
+		ArrayList<Koordinate> merge = new ArrayList<Koordinate>();
+		merge.addAll(libertiesIgralec(Igralec.BLACK));
+        merge.addAll(libertiesIgralec(Igralec.WHITE));
+        
+        return merge;
+	}
+	
+	public int stLibertiesIgralec(Igralec igralec) {
+		return libertiesIgralec(igralec).size();
+	}
 	
 	
 }
