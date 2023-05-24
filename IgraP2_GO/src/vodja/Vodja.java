@@ -7,6 +7,7 @@ import javax.swing.SwingWorker;
 import java.util.concurrent.TimeUnit;
 
 import gui.GlavnoOknoIgre;
+import gui.Mreza;
 import inteligenca.Inteligenca;
 import logika.Igra;
 import logika.Igralec;
@@ -23,7 +24,7 @@ public class Vodja {	//povezes igralce s clovekom,racunalnikom
 	public static Map<Igralec,KdoIgra> kdoIgra;
 	
 	public static GlavnoOknoIgre okno;
-	
+		
 	public static Igra igra = null;
 	
 	public static boolean clovekNaVrsti = false;

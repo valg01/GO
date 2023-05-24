@@ -52,7 +52,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	protected Color barvaMreze;
 	protected Color barvaRoba;
 	
-	Igra igra = new Igra(); //dodana igra izven konstruktorja
+ //dodana igra izven konstruktorja
 	
 	protected double polmer;
 	
@@ -69,10 +69,9 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	public Mreza(int visina, int sirina) { //konstruktor
 		super();
 		
-		Graf graf = new Graf();
+		//Graf graf = new Graf();
 		//NastaviMrezo();
-		this.igra = new Igra();
-		mreza = igra.grid;
+		
 		
 		barvaPrvega = Color.BLACK;
 		barvaDrugega = Color.WHITE;
@@ -112,6 +111,8 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		Graphics2D g2 = (Graphics2D) g;
 		double sirina = Kvadratek();
 		
+		if(Vodja.igra == null) return;
+		
 		g.setColor(barvaRoba);
 		g2.setStroke(new BasicStroke((float) (sirina * LINE_WIDTH)));
 		for (int i = 2; i < velikost + 2; i++) {
@@ -126,22 +127,22 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 			for (int j = 0; j <= velikost; j++) {
 				int x = (int) ((i + 1) * sirina);
 				int y = (int) ((j + 1) * sirina);
-				if (mreza.mreza[i][j] == Zeton.BLACK) {
+				if (Vodja.igra.grid.mreza[i][j] == Zeton.BLACK) {
 					g2.setColor(barvaPrvega);
 					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
 				}
-				else if (mreza.mreza[i][j] == Zeton.WHITE) {
+				else if (Vodja.igra.grid.mreza[i][j] == Zeton.WHITE) {
 					g2.setColor(barvaDrugega);
 					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));		
 				}
-				if (igra.ujetaGrupa != null) {
+				if (Vodja.igra.ujetaGrupa != null) {
 					g2.setColor(Color.RED);
-					 for (Koordinate koord : igra.ujetaGrupa) {
+					 for (Koordinate koord : Vodja.igra.ujetaGrupa) {
 					    	int x1 = (int) ((koord.getX() + 1) * sirina);
 							int y1 = (int) ((koord.getY() + 1) * sirina);
 					        g.drawOval(round(x1 - polmer), round(y1 - polmer),(int) (2* polmer),(int) (2 * polmer));
 					 }
-					 GlavnoOknoIgre.displayWinMessage(igra.zmagovalec());
+					 GlavnoOknoIgre.displayWinMessage(Vodja.igra.zmagovalec());
 				
 					
 				}
@@ -155,7 +156,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	public void paintCaptured(Graphics g) {
 	    g.setColor(Color.RED);
 	    double sirina = Kvadratek();
-	    for (Koordinate koord : igra.ujetaGrupa) {
+	    for (Koordinate koord : Vodja.igra.ujetaGrupa) {
 	    	int x = (int) ((koord.getX() + 1) * sirina);
 			int y = (int) ((koord.getY() + 1) * sirina);
 	        g.drawOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
@@ -230,9 +231,9 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				}
 			}
 		}
-		System.out.print(igra.stanje);
+		System.out.print(Vodja.igra.stanje);
 		
-		igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		Vodja.igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
 		
 		Vodja.igramo();
 		
