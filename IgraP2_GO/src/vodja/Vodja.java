@@ -1,18 +1,14 @@
 package vodja;
 
 import java.util.Map;
-import java.util.Random;
-
 import javax.swing.SwingWorker;
 import java.util.concurrent.TimeUnit;
 
 import gui.GlavnoOknoIgre;
-import gui.Mreza;
 import inteligenca.Inteligenca;
 import logika.Igra;
 import logika.Igralec;
 
-import inteligenca.Minimax;
 
 
 import splosno.Poteza;
@@ -58,16 +54,16 @@ public class Vodja {	//povezes igralce s clovekom,racunalnikom
 	}
 
 	
-	private static Random random = new Random ();
-	public static Inteligenca racunalnikovaInteligenca = new Minimax(3);
+	//private static Random random = new Random ();
+	public static Inteligenca racunalnikovaInteligenca = new Inteligenca();
 	
 	public static void igrajRacunalnikovoPotezo() {
 		Igra zacetnaIgra = igra;
 		SwingWorker<Void, Void> worker = new SwingWorker<Void, Void> () {
 			@Override
 			protected Void doInBackground() {
-				Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
-				try {TimeUnit.SECONDS.sleep(100);} catch (Exception e) {};
+				//Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
+				try {TimeUnit.SECONDS.sleep(1);} catch (Exception e) {};
 				return null;
 			}
 			@Override

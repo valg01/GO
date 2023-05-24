@@ -63,10 +63,10 @@ public class OceniPozicijo {
 		else if (igralec == Igralec.BLACK && najvecjaGrupaCrni < najvecjaGrupaBeli ||igralec == Igralec.WHITE && najvecjaGrupaBeli < najvecjaGrupaCrni) {
 			ocena -= Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 5;
 		}
-		if (igralec == Igralec.BLACK && libertiesCrni < libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli < libertiesCrni) { //če ima manj liberties kot nasportnik je ugodna poteza
+		if (igralec == Igralec.BLACK && libertiesCrni > libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli > libertiesCrni) { //če ima manj liberties kot nasportnik je ugodna poteza
 			ocena += Math.abs(libertiesBeli - libertiesCrni) * 3;
 		}
-		else if (igralec == Igralec.BLACK && libertiesCrni > libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli > libertiesCrni) {
+		else if (igralec == Igralec.BLACK && libertiesCrni < libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli < libertiesCrni) {
 			ocena -= Math.abs(libertiesBeli - libertiesCrni) * 3;
 		}
 		if (igralec == Igralec.BLACK && steviloCrnih > steviloBelih ||igralec == Igralec.WHITE && steviloBelih > steviloCrnih) { //ugodno če ima več na robu kot sredini
