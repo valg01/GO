@@ -30,7 +30,8 @@ private int globina;
 					kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
 				}
 			}
-			kopija.odigraj(k.getX(), k.getY());
+			Poteza p = new Poteza(k.getX(), k.getY());
+			kopija.odigraj(p);
 			int ocena = 0;
 			switch (kopija.stanje) {
             case win_white: ocena = (igralec == Igralec.WHITE ? ZMAGA : PORAZ); break;
@@ -40,7 +41,6 @@ private int globina;
 				else ocena = minimax(kopija, globina-1, igralec).ocena;
 			}
             if (najboljsa == null || igra.naPotezi()==igralec && ocena > najboljsa.ocena || igra.naPotezi() != igralec && ocena < najboljsa.ocena) {
-            	Poteza p = new Poteza(k.getX(), k.getY());
             	najboljsa = new OcenjenaPoteza(p, ocena);
             }
 		}

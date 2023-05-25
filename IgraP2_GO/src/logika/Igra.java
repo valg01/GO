@@ -73,10 +73,11 @@ public class Igra {
 		}
 	}
 	
-	public boolean odigraj(int x, int y) {
+	public boolean odigraj(Poteza p) {
 		System.out.println("v odigraj");
 		System.out.println(this);
-		Poteza p = new Poteza(x,y);
+		int x = p.x();
+		int y = p.y();
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
 		if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
@@ -294,7 +295,8 @@ public class Igra {
 		int max = prostaMesta().size();
 		int i = (int)Math.floor(Math.random() * (max + 1));  //generira naključni indeks 
 		Koordinate koor = prostaMesta().get(i);
-		odigraj(koor.getX(), koor.getY());
+		Poteza p = new Poteza(koor.getX(), koor.getY());
+		odigraj(p);
 	}
 	
 	//public boolean konecIgre()

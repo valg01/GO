@@ -63,14 +63,14 @@ public class Vodja {	//povezes igralce s clovekom,racunalnikom
 			@Override
 			protected Void doInBackground() {
 				//Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
-				try {TimeUnit.SECONDS.sleep(1);} catch (Exception e) {};
+				try {TimeUnit.SECONDS.sleep(0);} catch (Exception e) {};
 				return null;
 			}
 			@Override
 			protected void done () {
 				if (igra != zacetnaIgra) return;
 				Poteza poteza = racunalnikovaInteligenca.izberiPotezo(igra);
-				igra.odigraj(poteza.x(), poteza.y());
+				igra.odigraj(poteza);
 				igramo ();
 			}
 		};
@@ -78,8 +78,8 @@ public class Vodja {	//povezes igralce s clovekom,racunalnikom
 	}
 		
 	public static void igrajClovekovoPotezo(Poteza poteza) {
-		if (igra.odigraj(poteza.x(), poteza.y()) && clovekNaVrsti) {
-			igra.odigraj(poteza.x(), poteza.y());
+		if (igra.odigraj(poteza) && clovekNaVrsti) {
+			igra.odigraj(poteza);
 			clovekNaVrsti = false;
 			igramo();
 			

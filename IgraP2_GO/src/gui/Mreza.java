@@ -22,7 +22,7 @@ import logika.Igralec;
 import logika.Koordinate;
 import logika.Polje;
 import logika.Zeton;
-
+import splosno.Poteza;
 import vodja.Vodja;
 
 @SuppressWarnings("serial")
@@ -236,8 +236,8 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		
 		//System.out.print(Vodja.igra.stanje);
-		
-		Vodja.igra.odigraj(najblizjiX, najblizjiY); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		Poteza p = new Poteza(najblizjiX, najblizjiY);
+		Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
 		
 		Vodja.igramo();
 		
