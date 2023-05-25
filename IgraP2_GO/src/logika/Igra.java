@@ -12,7 +12,7 @@ public class Igra {
 	
 	public static int velikost = 9;
 	
-	private int stevec = 0;
+	public int stevec = 0;
 	
 	public static final List<Vrsta> VRSTE = new LinkedList<Vrsta>();
 	
@@ -74,8 +74,8 @@ public class Igra {
 	}
 	
 	public boolean odigraj(Poteza p) {
-		System.out.println("v odigraj");
-		System.out.println(this);
+		//System.out.println("v odigraj");
+		//System.out.println(this);
 		int x = p.x();
 		int y = p.y();
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
@@ -92,6 +92,8 @@ public class Igra {
 		updateGrupe();
 		updateStanje();
 		//System.out.print(zmagovalec());
+		stevec++;
+		//System.out.println(stevec);
 		return true;
 	}
 

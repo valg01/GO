@@ -26,7 +26,6 @@ public class Vodja {	//povezes igralce s clovekom,racunalnikom
 	public static boolean clovekNaVrsti = false;
 		
 	public static void igramoNovoIgro () {
-//		okno = new GlavnoOknoIgre();
 		igra = new Igra ();
 		igramo ();
 	}
