@@ -174,7 +174,7 @@ public class Igra {
 	
 	public List<Koordinate> libertiesIgralec(Igralec igralec) {
 		List<Koordinate> vsiLiberties = new ArrayList<>();
-		if (igralec == Igralec.BLACK) {
+		if (igralec == Igralec.BLACK && crneGrupe != null) {
 			for (List<Koordinate> grupa : crneGrupe) {
 				for (Koordinate liberti : libertiesGrupa(grupa)) {
 					if (!vsiLiberties.contains(liberti)) {
@@ -185,7 +185,7 @@ public class Igra {
 		}
 		
 	
-		if (igralec == Igralec.WHITE) {
+		if (igralec == Igralec.WHITE && beleGrupe != null) {
 			for (List<Koordinate> grupa : beleGrupe) {
 				for (Koordinate liberti : grupa) {
 					if (!vsiLiberties.contains(liberti)) {

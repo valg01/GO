@@ -18,8 +18,7 @@ public class OceniPozicijo {
 	}
 	
 	public static int oceniPozicijo(Igra igra, Igralec igralec){
-		if (igra.zmagovalec() == igralec) return 1000;
-		if (igra.zmagovalec() == igralec.nasprotnik()) return -1000;
+
 		int ocena = 0;
 		int najvecjaGrupaCrni = 0;
 		int libertiesCrni = igra.stLibertiesIgralec(igralec.BLACK);
@@ -28,13 +27,17 @@ public class OceniPozicijo {
 		System.out.println();
 		int libertiesBeli = igra.stLibertiesIgralec(igralec.WHITE);
 		int najvecjaGrupaBeli = 0;
-		for (List<Koordinate> grupa : igra.crneGrupe) {
-			if (grupa.size() > najvecjaGrupaCrni) najvecjaGrupaCrni = grupa.size();
-
+		if (igra.crneGrupe != null) {
+			for (List<Koordinate> grupa : igra.crneGrupe) {
+				if (grupa.size() > najvecjaGrupaCrni) najvecjaGrupaCrni = grupa.size();
+			}
 		}
-		for (List<Koordinate> grupa : igra.beleGrupe) {
-			if (grupa.size() > najvecjaGrupaBeli) najvecjaGrupaBeli = grupa.size();
-		
+			
+			
+		if (igra.beleGrupe != null) {
+			for (List<Koordinate> grupa : igra.beleGrupe) {
+				if (grupa.size() > najvecjaGrupaBeli) najvecjaGrupaBeli = grupa.size();
+			}
 		}
 		int steviloCrnih = 0;
 		int steviloBelih = 0;

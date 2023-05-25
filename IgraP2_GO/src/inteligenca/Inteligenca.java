@@ -75,8 +75,100 @@ public class Inteligenca extends KdoIgra {
 		// Če sem računalnik, maksimiramo oceno z začetno oceno ZGUBA
 		// Če sem pa človek, minimiziramo oceno z začetno oceno ZMAGA
 		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
-		List<Koordinate> moznePoteze = igra.prostaMesta();
+		List<Koordinate> moznePoteze = igra.prostaMesta(); 
+		List<Koordinate> verjetne = igra.najboljVerjetne(); //množica mest ki imajo zasedeno polje za soseda
 		Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
+		
+		for (Koordinate k: verjetne) {
+			if (igra.stevec < 1000) {
+				if (true){ //verjetne.contains(k))     (k.getX() >= 2  && k.getX() <= 5 && k.getY() >= 2  && k.getY() <= 5) {
+					Igra kopija = new Igra();
+					kopija.igralecNaPotezi = igra.igralecNaPotezi;
+					for (int i=0; i < Igra.velikost; i++) {
+						for (int j=0; j < Igra.velikost; j++) {
+							kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
+						}
+					}
+					kopija.stevec = igra.stevec;
+					Poteza p = new Poteza(k.getX(), k.getY());
+					kopija.odigraj(p);
+					int ocenap;
+					switch (kopija.stanje) {
+					case win_white: ocenap = (igralec == Igralec.WHITE ? ZMAGA : PORAZ); break;
+		            case win_black: ocenap = (igralec == Igralec.BLACK ? ZMAGA : PORAZ); break;
+					default:
+						// Nekdo je na potezi
+						if (globina == 1) ocenap = OceniPozicijo.oceniPozicijo(kopija, igralec);
+						else ocenap = alphabeta (kopija, globina-1, alpha, beta, igralec).ocena;
+					}
+					if (igra.naPotezi() == igralec) { // Maksimiramo oceno
+						if (ocenap > ocena) { // mora biti > namesto >=
+							ocena = ocenap;
+							kandidat = k;
+							alpha = Math.max(alpha,ocena);
+						}
+					} else { // igra.naPotezi() != jaz, torej minimiziramo oceno
+						if (ocenap < ocena) { // mora biti < namesto <=
+							ocena = ocenap;
+							kandidat = k;
+							beta = Math.min(beta, ocena);					
+						}	
+					}
+					if (alpha >= beta) // Izstopimo iz "for loop", saj ostale poteze ne pomagajo
+						break;
+				}
+
+			}
+			Igra kopija = new Igra();
+			kopija.igralecNaPotezi = igra.igralecNaPotezi;
+			for (int i=0; i < Igra.velikost; i++) {
+				for (int j=0; j < Igra.velikost; j++) {
+					kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
+				}
+			}
+			kopija.stevec = igra.stevec;
+			Poteza p = new Poteza(k.getX(), k.getY());
+			kopija.odigraj(p);
+			int ocenap;
+			switch (kopija.stanje) {
+			case win_white: ocenap = (igralec == Igralec.WHITE ? ZMAGA : PORAZ); break;
+            case win_black: ocenap = (igralec == Igralec.BLACK ? ZMAGA : PORAZ); break;
+			default:
+				// Nekdo je na potezi
+				if (globina == 1) ocenap = OceniPozicijo.oceniPozicijo(kopija, igralec);
+				else ocenap = alphabeta (kopija, globina-1, alpha, beta, igralec).ocena;
+			}
+			if (igra.naPotezi() == igralec) { // Maksimiramo oceno
+				if (ocenap > ocena) { // mora biti > namesto >=
+					ocena = ocenap;
+					kandidat = k;
+					alpha = Math.max(alpha,ocena);
+				}
+			} else { // igra.naPotezi() != jaz, torej minimiziramo oceno
+				if (ocenap < ocena) { // mora biti < namesto <=
+					ocena = ocenap;
+					kandidat = k;
+					beta = Math.min(beta, ocena);					
+				}	
+			}
+			if (alpha >= beta) // Izstopimo iz "for loop", saj ostale poteze ne pomagajo
+				break;
+		}
+		Poteza p = new Poteza(kandidat.getX(), kandidat.getY());
+		igra.stevec++;
+		return new OcenjenaPoteza (p, ocena);
+	}
+
+	public static OcenjenaPoteza alphabetaStar(Igra igra, int globina, int alpha, int beta, Igralec igralec) {
+		int ocena;
+		// Če sem računalnik, maksimiramo oceno z začetno oceno ZGUBA
+		// Če sem pa človek, minimiziramo oceno z začetno oceno ZMAGA
+		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
+		List<Koordinate> moznePoteze = igra.prostaMesta();
+		
+		
+		Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
+		
 		for (Koordinate k: moznePoteze) {
 			if (igra.stevec < 10) {
 				if (k.getX() >= 2  && k.getX() <= 5 && k.getY() >= 2  && k.getY() <= 5) {
@@ -157,10 +249,9 @@ public class Inteligenca extends KdoIgra {
 		return new OcenjenaPoteza (p, ocena);
 	}
 
-	
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 1,PORAZ,ZMAGA,igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 5,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 
