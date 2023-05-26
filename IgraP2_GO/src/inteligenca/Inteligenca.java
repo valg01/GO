@@ -77,6 +77,16 @@ public class Inteligenca extends KdoIgra {
 		
 		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
 		
+		Koordinate ogrozenaNasprotnik = igralec.nasprotnik().getOgrozena();
+		if (ogrozenaNasprotnik != null) {
+			int x = ogrozenaNasprotnik.getX();
+			int y = ogrozenaNasprotnik.getY();
+			
+			Poteza p = new Poteza(x, y);
+			return new OcenjenaPoteza (p, ocena);
+		}
+		
+		
 		Koordinate ogrozena = igralec.getOgrozena();
 		if (ogrozena != null) {
 			System.out.println(ogrozena);
@@ -86,6 +96,9 @@ public class Inteligenca extends KdoIgra {
 			Poteza p = new Poteza(x, y);
 			return new OcenjenaPoteza (p, ocena);
 		}
+		
+		
+		
 		
 		
 		List<Koordinate> moznePoteze = igra.prostaMesta(); 
@@ -265,7 +278,7 @@ public class Inteligenca extends KdoIgra {
 
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 5,PORAZ,ZMAGA,igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 

@@ -22,12 +22,17 @@ public class Igra {
 	
 	public Igralec igralecNaPotezi;
 	
+	public List<Koordinate> libertiesBeli;
+	public List<Koordinate> libertiesCrni;
+	
 	public Koordinate ogrozenaBela;
 	public Koordinate ogrozenaCrna;
 	
 	public List<List<Koordinate>> beleGrupe;
 	public List<List<Koordinate>> crneGrupe;
 	public List<Koordinate> ujetaGrupa;
+	
+	public Koordinate zadnjaPoteza;
 	
 	public Igra() {
 		grid = new Polje(velikost);
@@ -257,6 +262,7 @@ public class Igra {
 	                crneGrupe.add(grup);
 	                crneSet.add(grupSet);
 	                if (libertiesGrupa.size()==1) {
+	                	//ogrozeneCrne.add(libertiesGrupa.get(0));
 	                	ogrozenaCrna = libertiesGrupa.get(0);
 	                	naselOgrozenoCrno = true;
 	                }

@@ -10,7 +10,7 @@ import logika.Zeton;
 public class OceniPozicijo {
 	
 	Igra igra;
-	int ocena;
+	static int ocena;
 	
 	public OceniPozicijo(Igra igra, int ocena) {
 		this.igra = igra;
@@ -18,14 +18,44 @@ public class OceniPozicijo {
 	}
 	
 	public static int oceniPozicijo(Igra igra, Igralec igralec){
+		Igralec naPotezi = igra.igralecNaPotezi;
 		if (igralec == Igralec.BLACK) {
 			if (igra.stanje == igra.stanje.win_black) return 1000;
 			if (igra.stanje == igra.stanje.win_white) return -1000;
+			
+			//if (igra.igralecNaPotezi == Igralec.WHITE) {
+			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -1000;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) ocena += 50;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+			//}
+			//else if (igra.igralecNaPotezi == Igralec.BLACK) {
+			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) ocena -= 50;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 1000;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+			//}
+			
+			
 		}
 		if (igralec == Igralec.WHITE) {
 			if (igra.stanje == igra.stanje.win_white) return 1000;
 			if (igra.stanje == igra.stanje.win_black) return -1000;
+			
+			//if (igra.igralecNaPotezi == Igralec.WHITE) {
+			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return 1000;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) ocena -= 10;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+			//}
+			//else if (igra.igralecNaPotezi == Igralec.BLACK) {
+			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) ocena += 10;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -1000;
+			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
+			//}
+			
+			
 		}
+		
+	
+		
 		
 
 		int ocena = 0;
@@ -83,10 +113,10 @@ public class OceniPozicijo {
 			ocena -= Math.abs(libertiesBeli - libertiesCrni) * 6;
 		}
 		if (igralec == Igralec.BLACK && steviloCrnih > steviloBelih ||igralec == Igralec.WHITE && steviloBelih > steviloCrnih) { //ugodno če ima več na robu kot sredini
-			ocena += Math.abs(steviloCrnih - steviloBelih) * 2;
+			ocena += Math.abs(steviloCrnih - steviloBelih) * 1;
 		}
 		else if (igralec == Igralec.BLACK && steviloCrnih < steviloBelih ||igralec == Igralec.WHITE && steviloBelih < steviloCrnih) {
-			ocena -= Math.abs(steviloCrnih - steviloBelih) * 2;
+			ocena -= Math.abs(steviloCrnih - steviloBelih) * 1;
 		}
 		return ocena;
 		

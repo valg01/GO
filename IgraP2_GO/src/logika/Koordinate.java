@@ -34,6 +34,11 @@ public class Koordinate {
     public Koordinate spodnja() {
         return new Koordinate(x, y+1);
     }
+    
+    
+    public Koordinate getSosednjaMesta() {
+    	return;
+    }
 
     @Override
     public String toString() {
