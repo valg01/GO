@@ -184,7 +184,7 @@ public class Inteligenca extends KdoIgra {
 		Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
 		
 		for (Koordinate k: moznePoteze) {
-			if (igra.stevec < 10) {
+			if (igra.stevec < 100) {
 				if (k.getX() >= 2  && k.getX() <= 5 && k.getY() >= 2  && k.getY() <= 5) {
 					Igra kopija = new Igra();
 					kopija.igralecNaPotezi = igra.igralecNaPotezi;
@@ -265,7 +265,7 @@ public class Inteligenca extends KdoIgra {
 
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 5,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 

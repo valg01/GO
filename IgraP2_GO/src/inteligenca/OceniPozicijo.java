@@ -18,6 +18,15 @@ public class OceniPozicijo {
 	}
 	
 	public static int oceniPozicijo(Igra igra, Igralec igralec){
+		if (igralec == Igralec.BLACK) {
+			if (igra.stanje == igra.stanje.win_black) return 1000;
+			if (igra.stanje == igra.stanje.win_white) return -1000;
+		}
+		if (igralec == Igralec.WHITE) {
+			if (igra.stanje == igra.stanje.win_white) return 1000;
+			if (igra.stanje == igra.stanje.win_black) return -1000;
+		}
+		
 
 		int ocena = 0;
 		int najvecjaGrupaCrni = 0;
@@ -62,22 +71,22 @@ public class OceniPozicijo {
 			else if(igra.grid.mreza[7][j] == Zeton.WHITE) steviloBelih++; 
 		}
 		if (igralec == Igralec.BLACK && najvecjaGrupaCrni > najvecjaGrupaBeli ||igralec == Igralec.WHITE && najvecjaGrupaBeli > najvecjaGrupaCrni) { //ce je najvecja grupa vecja od najvecje grupe nasprotnika je ugodno
-			ocena += Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 1;
+			ocena += Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 2;
 		}
 		else if (igralec == Igralec.BLACK && najvecjaGrupaCrni < najvecjaGrupaBeli ||igralec == Igralec.WHITE && najvecjaGrupaBeli < najvecjaGrupaCrni) {
-			ocena -= Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 1;
+			ocena -= Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 2;
 		}
 		if (igralec == Igralec.BLACK && libertiesCrni > libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli > libertiesCrni) { //če ima manj liberties kot nasportnik je ugodna poteza
-			ocena += Math.abs(libertiesBeli - libertiesCrni) * 5;
+			ocena += Math.abs(libertiesBeli - libertiesCrni) * 6;
 		}
 		else if (igralec == Igralec.BLACK && libertiesCrni < libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli < libertiesCrni) {
-			ocena -= Math.abs(libertiesBeli - libertiesCrni) * 5;
+			ocena -= Math.abs(libertiesBeli - libertiesCrni) * 6;
 		}
 		if (igralec == Igralec.BLACK && steviloCrnih > steviloBelih ||igralec == Igralec.WHITE && steviloBelih > steviloCrnih) { //ugodno če ima več na robu kot sredini
-			ocena += Math.abs(steviloCrnih - steviloBelih) * 3;
+			ocena += Math.abs(steviloCrnih - steviloBelih) * 2;
 		}
 		else if (igralec == Igralec.BLACK && steviloCrnih < steviloBelih ||igralec == Igralec.WHITE && steviloBelih < steviloCrnih) {
-			ocena -= Math.abs(steviloCrnih - steviloBelih) * 3;
+			ocena -= Math.abs(steviloCrnih - steviloBelih) * 2;
 		}
 		return ocena;
 		
