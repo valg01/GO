@@ -7,7 +7,7 @@ public class Polje { //polje je mreža
 	
 	public Polje(int velikost) {
 		this.velikost = velikost;
-		this.mreza = new Zeton[velikost + 1][velikost + 1];
+		this.mreza = new Zeton[velikost][velikost];
 	}
 	
 	public Zeton naMestu(int x, int y) {

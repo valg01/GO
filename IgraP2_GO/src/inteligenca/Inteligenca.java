@@ -278,7 +278,7 @@ public class Inteligenca extends KdoIgra {
 
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 2,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 

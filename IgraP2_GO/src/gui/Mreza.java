@@ -116,16 +116,16 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		g.setColor(barvaRoba);
 		g2.setStroke(new BasicStroke((float) (sirina * LINE_WIDTH)));
-		for (int i = 2; i < velikost + 2; i++) {
-			g2.drawLine((int)(i * sirina),(int)(2 * sirina),
-					(int)(i * sirina), (int)((velikost + 1) * sirina));
-			g2.drawLine((int)(2 * sirina), (int)(i * sirina),
-				   (int)((velikost + 1) * sirina), (int)(i * sirina));
+		for (int i = 1; i < velikost + 1 ; i++) {
+			g2.drawLine((int)((i) * sirina),(int)(sirina),
+					(int)((i) * sirina), (int)((velikost) * sirina));
+			g2.drawLine((int)(1 * sirina), (int)(i * sirina),
+				   (int)((velikost) * sirina), (int)(i * sirina));
 			
 		}
 		
-		for (int i = 0; i <= velikost; i++) {
-			for (int j = 0; j <= velikost; j++) {
+		for (int i = 0; i < velikost; i++) {
+			for (int j = 0; j < velikost; j++) {
 				int x = (int) ((i + 1) * sirina);
 				int y = (int) ((j + 1) * sirina);
 				if (Vodja.igra.grid.mreza[i][j] == Zeton.BLACK) {
@@ -223,8 +223,8 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		int najblizjiX = 0;
 		int najblizjiY = 0;
 		double sirina = Kvadratek();
-		for (int i = 2; i < velikost +4 ;i ++) {
-			for (int j = 2; j < velikost + 4; j++) {
+		for (int i = 1; i < velikost +4 ;i ++) {
+			for (int j = 1; j < velikost + 4; j++) {
 				double razdalja = Math.sqrt((x - i * sirina ) * (x - i * sirina ) + (y - j * sirina ) * (y - j* sirina));
 				if (razdalja < najblizja) {
 					najblizjiX = i-1;
