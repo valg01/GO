@@ -35,10 +35,6 @@ public class Koordinate {
         return new Koordinate(x, y+1);
     }
     
-    
-    public Koordinate getSosednjaMesta() {
-    	return;
-    }
 
     @Override
     public String toString() {

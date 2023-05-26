@@ -279,9 +279,18 @@ public class Inteligenca extends KdoIgra {
 	}
 
 	public Poteza izberiPotezo (Igra igra) {
-		if (igra.stevec == 0) return new Poteza(4,4);
-		System.out.print(igra.najboljVerjetne().size());
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
+		if (igra.stevec == 0) return new Poteza(3,3);
+
+		
+		int globina;
+		if (igra.najboljVerjetne().size() > 10) {
+		    globina = 3;
+		}
+		else globina = 4;
+		
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, globina,PORAZ,ZMAGA,igra.naPotezi());
+
+		//OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 2,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 

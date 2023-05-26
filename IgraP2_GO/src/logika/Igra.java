@@ -88,11 +88,11 @@ public class Igra {
 		int y = p.y();
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
-		if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
+		if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
 			igralecNaPotezi = Igralec.WHITE;
 		}
-		else if ((x != 0 || y != 0) && igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
+		else if ( igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.WHITE;
 			igralecNaPotezi = Igralec.BLACK;
 		}
@@ -115,7 +115,7 @@ public class Igra {
         Zeton zeton = grid.mreza[x][y];
         List<Koordinate> sosedi = new ArrayList<>();
         //sosedi.add(koord);
-        if (velikost - x > 0 && grid.mreza[x + 1][y] == zeton) {
+        if (velikost - x - 1 > 0 && grid.mreza[x + 1][y] == zeton) {
             sosedi.add(koord.desna());
             //System.out.println("v sosedih");
             //System.out.println(x);
@@ -124,13 +124,13 @@ public class Igra {
             //System.out.println(grid.mreza[x + 1][y]);
             //System.out.println();
         }
-        if (x != 1 && grid.mreza[x - 1][y] == zeton) {
+        if (x != 0 && grid.mreza[x - 1][y] == zeton) {
             sosedi.add(koord.leva());
         }
-        if (velikost - y > 0 && grid.mreza[x][y + 1] == zeton) {
+        if (velikost - y -1> 0 && grid.mreza[x][y + 1] == zeton) {
             sosedi.add(koord.spodnja());
         }
-        if (y != 1 && grid.mreza[x][y - 1] == zeton) {
+        if (y != 0 && grid.mreza[x][y - 1] == zeton) {
             sosedi.add(koord.zgornja());
         }
         //System.out.print(sosedi);
@@ -140,16 +140,16 @@ public class Igra {
         int x = koord.getX();
         int y = koord.getY();
 
-        if (velikost - x > 0 && grid.mreza[x + 1][y] == null) {
+        if (velikost - x -1 > 0 && grid.mreza[x + 1][y] == null) {
             return true;
         }
-        if (x != 1 && grid.mreza[x - 1][y] == null) {
+        if (x != 0 && grid.mreza[x - 1][y] == null) {
         	return true;
         }
-        if (velikost - y > 0 && grid.mreza[x][y + 1] == null) {
+        if (velikost - y -1 > 0 && grid.mreza[x][y + 1] == null) {
         	return true;
         }
-        if (y != 1 && grid.mreza[x][y - 1] == null) {
+        if (y != 0 && grid.mreza[x][y - 1] == null) {
         	return true;
         }
         
@@ -164,16 +164,16 @@ public class Igra {
 	        
 	        
 
-	        if (velikost - x > 0 && grid.mreza[x + 1][y] == null && !liberties.contains(koord.desna()) ) {
+	        if (velikost - x -1 > 0 && grid.mreza[x + 1][y] == null && !liberties.contains(koord.desna()) ) {
 	            liberties.add(koord.desna());
 	        }
-	        if (x != 1 && grid.mreza[x - 1][y] == null && !liberties.contains(koord.leva())) {
+	        if (x != 0 && grid.mreza[x - 1][y] == null && !liberties.contains(koord.leva())) {
 	        	liberties.add(koord.leva());
 	        }
-	        if (velikost - y > 0 && grid.mreza[x][y + 1] == null && !liberties.contains(koord.spodnja())) {
+	        if (velikost - y -1 > 0 && grid.mreza[x][y + 1] == null && !liberties.contains(koord.spodnja())) {
 	        	liberties.add(koord.spodnja());
 	        }
-	        if (y != 1 && grid.mreza[x][y - 1] == null && !liberties.contains(koord.zgornja())) {
+	        if (y != 0 && grid.mreza[x][y - 1] == null && !liberties.contains(koord.zgornja())) {
 	        	liberties.add(koord.zgornja());
 	        }
 	        
@@ -249,8 +249,8 @@ public class Igra {
 	    boolean naselOgrozenoCrno = false;
 	    		
 	    
-	    for (int i = 1; i <= velikost; i++) {
-	        for (int j = 1; j <= velikost; j++) {
+	    for (int i = 0; i < velikost; i++) {
+	        for (int j = 0; j < velikost; j++) {
 	            Zeton zeton = grid.mreza[i][j];
 	            List<Koordinate> grup = grupa(new Koordinate(i, j));
 	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
