@@ -23,16 +23,16 @@ public class OceniPozicijo {
 			if (igra.stanje == igra.stanje.win_black) return 1000;
 			if (igra.stanje == igra.stanje.win_white) return -1000;
 			
-			//if (igra.igralecNaPotezi == Igralec.WHITE) {
-			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -1000;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) ocena += 50;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
-			//}
-			//else if (igra.igralecNaPotezi == Igralec.BLACK) {
-			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) ocena -= 50;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 1000;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
-			//}
+			if (igra.igralecNaPotezi == Igralec.WHITE) {
+				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -1000;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 200;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
+			}
+			else if (igra.igralecNaPotezi == Igralec.BLACK) {
+				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -200;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 1000;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+			}
 			
 			
 		}
@@ -40,16 +40,16 @@ public class OceniPozicijo {
 			if (igra.stanje == igra.stanje.win_white) return 1000;
 			if (igra.stanje == igra.stanje.win_black) return -1000;
 			
-			//if (igra.igralecNaPotezi == Igralec.WHITE) {
-			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return 1000;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) ocena -= 10;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
-			//}
-			//else if (igra.igralecNaPotezi == Igralec.BLACK) {
-			//	if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) ocena += 10;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -1000;
-			//	if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
-			//}
+			if (igra.igralecNaPotezi == Igralec.WHITE) {
+				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return 1000;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -200;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+			}
+			else if (igra.igralecNaPotezi == Igralec.BLACK) {
+				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -200;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -1000;
+				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
+			}
 			
 			
 		}

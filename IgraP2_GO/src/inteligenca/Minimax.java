@@ -19,6 +19,8 @@ private int globina;
 
 
 	public OcenjenaPoteza minimax(Igra igra, int globina, Igralec igralec) { //
+		
+
 		OcenjenaPoteza najboljsa = null;
 		List<Koordinate> mozne = igra.prostaMesta();
 		List<Koordinate> verjetne = igra.najboljVerjetne();

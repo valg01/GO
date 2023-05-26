@@ -75,6 +75,8 @@ public class Inteligenca extends KdoIgra {
 		// Če sem računalnik, maksimiramo oceno z začetno oceno ZGUBA
 		// Če sem pa človek, minimiziramo oceno z začetno oceno ZMAGA
 		
+
+		
 		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
 		
 		Koordinate ogrozenaNasprotnik = igralec.nasprotnik().getOgrozena();
@@ -89,7 +91,7 @@ public class Inteligenca extends KdoIgra {
 		
 		Koordinate ogrozena = igralec.getOgrozena();
 		if (ogrozena != null) {
-			System.out.println(ogrozena);
+			//System.out.println(ogrozena);
 			int x = ogrozena.getX();
 			int y = ogrozena.getY();
 			
@@ -278,6 +280,7 @@ public class Inteligenca extends KdoIgra {
 
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
+		System.out.print(igra.najboljVerjetne().size());
 		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
