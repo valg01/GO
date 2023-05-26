@@ -22,9 +22,9 @@ public class OceniPozicijo {
 		int ocena = 0;
 		int najvecjaGrupaCrni = 0;
 		int libertiesCrni = igra.stLibertiesIgralec(igralec.BLACK);
-		System.out.println();
-		System.out.println(libertiesCrni);
-		System.out.println();
+		//System.out.println();
+		//System.out.println(libertiesCrni);
+		//System.out.println();
 		int libertiesBeli = igra.stLibertiesIgralec(igralec.WHITE);
 		int najvecjaGrupaBeli = 0;
 		if (igra.crneGrupe != null) {

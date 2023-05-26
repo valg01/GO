@@ -243,8 +243,11 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		
 		//System.out.print(Vodja.igra.libertiesIgralec(Igralec.BLACK));
-		System.out.print(Vodja.igra.najboljVerjetne());
+		//System.out.print(Vodja.igra.najboljVerjetne());
 		
+		
+		System.out.print(Vodja.igra.ogrozenaCrna);
+				
 		//Koordinate koord = new Koordinate(3,3);
 		//List<Koordinate> grupa = Vodja.igra.grupa(koord);
 		//System.out.print(Vodja.igra.libertiesGrupa(grupa));

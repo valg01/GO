@@ -74,10 +74,24 @@ public class Inteligenca extends KdoIgra {
 		int ocena;
 		// Če sem računalnik, maksimiramo oceno z začetno oceno ZGUBA
 		// Če sem pa človek, minimiziramo oceno z začetno oceno ZMAGA
+		
 		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
+		
+		Koordinate ogrozena = igralec.getOgrozena();
+		if (ogrozena != null) {
+			System.out.println(ogrozena);
+			int x = ogrozena.getX();
+			int y = ogrozena.getY();
+			
+			Poteza p = new Poteza(x, y);
+			return new OcenjenaPoteza (p, ocena);
+		}
+		
+		
 		List<Koordinate> moznePoteze = igra.prostaMesta(); 
 		List<Koordinate> verjetne = igra.najboljVerjetne(); //množica mest ki imajo zasedeno polje za soseda
 		Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
+		
 		
 		for (Koordinate k: verjetne) {
 			if (igra.stevec < 1000) {
@@ -251,7 +265,7 @@ public class Inteligenca extends KdoIgra {
 
 	public Poteza izberiPotezo (Igra igra) {
 		if (igra.stevec == 0) return new Poteza(4,4);
-		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 5,PORAZ,ZMAGA,igra.naPotezi());
+		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, 4,PORAZ,ZMAGA,igra.naPotezi());
 		return najboljsaPoteza.poteza;	
 	};
 

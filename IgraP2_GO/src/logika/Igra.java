@@ -22,6 +22,9 @@ public class Igra {
 	
 	public Igralec igralecNaPotezi;
 	
+	public Koordinate ogrozenaBela;
+	public Koordinate ogrozenaCrna;
+	
 	public List<List<Koordinate>> beleGrupe;
 	public List<List<Koordinate>> crneGrupe;
 	public List<Koordinate> ujetaGrupa;
@@ -153,6 +156,8 @@ public class Igra {
 		for (Koordinate koord : grupa) {
 			int x = koord.getX();
 	        int y = koord.getY();
+	        
+	        
 
 	        if (velikost - x > 0 && grid.mreza[x + 1][y] == null && !liberties.contains(koord.desna()) ) {
 	            liberties.add(koord.desna());
@@ -169,8 +174,12 @@ public class Igra {
 	        
 	        
 		}
+
+		
 		return liberties;
 	}
+	
+	
 	
 	public List<Koordinate> libertiesIgralec(Igralec igralec) {
 		List<Koordinate> vsiLiberties = new ArrayList<>();
@@ -230,24 +239,48 @@ public class Igra {
 
 	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
 	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
-
+	    
+	    boolean naselOgrozenoBelo = false;
+	    boolean naselOgrozenoCrno = false;
+	    		
+	    
 	    for (int i = 1; i <= velikost; i++) {
 	        for (int j = 1; j <= velikost; j++) {
 	            Zeton zeton = grid.mreza[i][j];
 	            List<Koordinate> grup = grupa(new Koordinate(i, j));
 	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
-
+	            
+	            
+	            List<Koordinate> libertiesGrupa = libertiesGrupa(grup);
+	            
 	            if (zeton == zeton.BLACK && !crneSet.contains(grupSet)) {
 	                crneGrupe.add(grup);
 	                crneSet.add(grupSet);
+	                if (libertiesGrupa.size()==1) {
+	                	ogrozenaCrna = libertiesGrupa.get(0);
+	                	naselOgrozenoCrno = true;
+	                }
+	            
+	                
 	            } else if (zeton == zeton.WHITE && !beleSet.contains(grupSet)) {
 	                beleGrupe.add(grup);
 	                beleSet.add(grupSet);
+	                if (libertiesGrupa.size()==1) {
+	                	ogrozenaBela = libertiesGrupa.get(0);
+	                	naselOgrozenoBelo = true;
+	                }
 	            }
 	            
 	        }
 	    }
-	    //System.out.print(crneGrupe);
+	    if (!naselOgrozenoBelo) {
+	    	ogrozenaBela = null;
+	    }
+	    if (!naselOgrozenoCrno) {
+	    	ogrozenaCrna = null;
+	    }
+	    
+		
 	}
 	
 	
