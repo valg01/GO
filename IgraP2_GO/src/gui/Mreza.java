@@ -136,17 +136,18 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 					g2.setColor(barvaDrugega);
 					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));		
 				}
-				if (Vodja.igra.ujetaGrupa != null) {
-					g2.setColor(Color.RED);
-					 for (Koordinate koord : Vodja.igra.ujetaGrupa) {
-					    	int x1 = (int) ((koord.getX() + 1) * sirina);
-							int y1 = (int) ((koord.getY() + 1) * sirina);
-					        g.drawOval(round(x1 - polmer), round(y1 - polmer),(int) (2* polmer),(int) (2 * polmer));
-					 }
-					 GlavnoOknoIgre.displayWinMessage(Vodja.igra.zmagovalec());
+				//if (Vodja.igra.ujetaGrupa != null) {
+				//	g2.setColor(Color.RED);
+				//	 for (Koordinate koord : Vodja.igra.ujetaGrupa) {
+				//	    	int x1 = (int) ((koord.getX() + 1) * sirina);
+					    	//			int y1 = (int) ((koord.getY() + 1) * sirina);
+				//	        g.drawOval(round(x1 - polmer), round(y1 - polmer),(int) (2* polmer),(int) (2 * polmer));
+				//	 }
+				//	 GlavnoOknoIgre.displayWinMessage(Vodja.igra.zmagovalec());
 				
 					
-				}
+				//}
+
 
 			}
 		}
@@ -154,15 +155,15 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 	}
 	
-	public void paintCaptured(Graphics g) {
-	    g.setColor(Color.RED);
-	    double sirina = Kvadratek();
-	    for (Koordinate koord : Vodja.igra.ujetaGrupa) {
-	    	int x = (int) ((koord.getX() + 1) * sirina);
-			int y = (int) ((koord.getY() + 1) * sirina);
-	        g.drawOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
-	    }
-	}
+	//public void paintCaptured(Graphics g) {
+	//  g.setColor(Color.RED);
+	//  double sirina = Kvadratek();
+	//  for (Koordinate koord : Vodja.igra.ujetaGrupa) {
+	//  	int x = (int) ((koord.getX() + 1) * sirina);
+	//		int y = (int) ((koord.getY() + 1) * sirina);
+	//      g.drawOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
+	//  }
+	//}
 
 
 	

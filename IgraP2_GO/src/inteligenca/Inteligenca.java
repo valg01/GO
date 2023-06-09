@@ -283,6 +283,7 @@ public class Inteligenca extends KdoIgra {
 
 		
 		int globina;
+		System.out.print(igra.najboljVerjetne().size());
 		if (igra.najboljVerjetne().size() > 10) {
 		    globina = 3;
 		}

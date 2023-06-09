@@ -14,23 +14,29 @@ public class Igra {
 	
 	public int stevec = 0;
 	
-	public static final List<Vrsta> VRSTE = new LinkedList<Vrsta>();
-	
 	public Polje grid;
 	
 	public Stanje stanje;
 	
 	public Igralec igralecNaPotezi;
 	
-	public List<Koordinate> libertiesBeli;
-	public List<Koordinate> libertiesCrni;
+	public List<Koordinate> libertiesBeli = new ArrayList<Koordinate>();
+	public List<Koordinate> libertiesCrni = new ArrayList<Koordinate>();
 	
-	public Koordinate ogrozenaBela;
-	public Koordinate ogrozenaCrna;
+	public List<Koordinate> ogrozeneBele;
+	public List<Koordinate> ogrozeneCrne;
 	
 	public List<List<Koordinate>> beleGrupe;
 	public List<List<Koordinate>> crneGrupe;
-	public List<Koordinate> ujetaGrupa;
+	
+	public List<List<Koordinate>> ujeteBele = new ArrayList<List<Koordinate>>();
+	public List<List<Koordinate>> ujeteCrne = new ArrayList<List<Koordinate>>();
+	
+	public int stUjetihBelih;
+	public int stUjetihCrnih;
+	
+	public int stBelihNaPlosci;
+	public int stCrnihNaPlosci;
 	
 	public Koordinate zadnjaPoteza;
 	
@@ -43,6 +49,7 @@ public class Igra {
 		}
 		igralecNaPotezi = Igralec.BLACK;
 		stanje = Stanje.in_progress;
+		
 	}
 	
 	public Igralec naPotezi() {
@@ -84,6 +91,7 @@ public class Igra {
 	public boolean odigraj(Poteza p) {
 		//System.out.println("v odigraj");
 		//System.out.println(this);
+		
 		int x = p.x();
 		int y = p.y();
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
@@ -91,17 +99,22 @@ public class Igra {
 		if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
 			igralecNaPotezi = Igralec.WHITE;
+			stCrnihNaPlosci += 1;
 		}
 		else if ( igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.WHITE;
 			igralecNaPotezi = Igralec.BLACK;
+			stBelihNaPlosci += 1;
 		}
 		
 		updateGrupe();
-		updateStanje();
+		updateUjete();
+		updateLiberties();
 		//System.out.print(zmagovalec());
 		stevec++;
 		//System.out.println(stevec);
+		
+		printInfo();
 		return true;
 	}
 
@@ -211,6 +224,11 @@ public class Igra {
 		return vsiLiberties;
 	}
 	
+	public void updateLiberties() {
+		libertiesBeli = libertiesIgralec(Igralec.WHITE);
+		libertiesCrni = libertiesIgralec(Igralec.BLACK);
+	}
+	
 	
 	
 	public List<Koordinate> grupa(Koordinate koord) {
@@ -233,20 +251,23 @@ public class Igra {
 	    return grupa;
 	}
 
-
-	
 	
 	
 	
 	public void updateGrupe() {
 	    beleGrupe = new ArrayList<>();
 	    crneGrupe = new ArrayList<>();
+	    
+	    ogrozeneBele = new ArrayList<>();
+	    ogrozeneCrne = new ArrayList<>();
 
 	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
 	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
 	    
-	    boolean naselOgrozenoBelo = false;
-	    boolean naselOgrozenoCrno = false;
+	    //boolean naselOgrozenoBelo = false;
+	    //boolean naselOgrozenoCrno = false;
+	    
+	    
 	    		
 	    
 	    for (int i = 0; i < velikost; i++) {
@@ -262,9 +283,10 @@ public class Igra {
 	                crneGrupe.add(grup);
 	                crneSet.add(grupSet);
 	                if (libertiesGrupa.size()==1) {
-	                	//ogrozeneCrne.add(libertiesGrupa.get(0));
-	                	ogrozenaCrna = libertiesGrupa.get(0);
-	                	naselOgrozenoCrno = true;
+	                	ogrozeneCrne.add(libertiesGrupa.get(0));
+	                	//ogrozenaCrna = libertiesGrupa.get(0);
+	                
+	     
 	                }
 	            
 	                
@@ -272,19 +294,18 @@ public class Igra {
 	                beleGrupe.add(grup);
 	                beleSet.add(grupSet);
 	                if (libertiesGrupa.size()==1) {
-	                	ogrozenaBela = libertiesGrupa.get(0);
-	                	naselOgrozenoBelo = true;
+	                	ogrozeneBele.add(libertiesGrupa.get(0));
 	                }
 	            }
 	            
 	        }
 	    }
-	    if (!naselOgrozenoBelo) {
-	    	ogrozenaBela = null;
-	    }
-	    if (!naselOgrozenoCrno) {
-	    	ogrozenaCrna = null;
-	    }
+	    //if (!naselOgrozenoBelo) {
+	    //	ogrozeneBele = null;
+	    //}
+	    //if (!naselOgrozenoCrno) {
+	    //	ogrozeneCrne = null;
+	    //}
 	    
 		
 	}
@@ -310,16 +331,51 @@ public class Igra {
 	public Stanje updateStanje() {
 		for (List<Koordinate> grupa : beleGrupe) {
 			if (ujeta(grupa)) {
-				ujetaGrupa = grupa;
+				ujeteBele.add(grupa);
 				stanje = Stanje.win_black;
 				return Stanje.win_black;
 			}
 		}
 		for (List<Koordinate> grupa : crneGrupe) {
 			if (ujeta(grupa)) {
-				ujetaGrupa = grupa;
+				ujeteCrne.add(grupa);
 				stanje = Stanje.win_white;
 				return Stanje.win_white;
+			}
+		}
+		
+		if (prostaMesta().isEmpty()) {
+			stanje = Stanje.draw;
+			return Stanje.draw;
+		}
+		stanje = Stanje.in_progress;
+		return Stanje.in_progress;
+		
+	}
+	
+	public Stanje updateUjete() {
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (ujeta(grupa)) {
+				ujeteBele.add(grupa);
+				for (Koordinate koord : grupa) {
+					grid.dodajZetonKoord(null, koord);
+					stUjetihBelih += 1;
+					stBelihNaPlosci -= 1;
+				}
+				updateGrupe();
+				
+			}
+		}
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (ujeta(grupa)) {
+				ujeteCrne.add(grupa);
+				for (Koordinate koord : grupa) {
+					grid.dodajZetonKoord(null, koord);
+					stUjetihCrnih += 1;
+					stCrnihNaPlosci -= 1;
+				}
+				updateGrupe();
+				
 			}
 		}
 		
@@ -354,7 +410,57 @@ public class Igra {
 		return libertiesIgralec(igralec).size();
 	}
 	
-	
+	public void printInfo() {
+	    System.out.println("----- Information -----");
+	    
+	    System.out.println("Liberties of Beli:");
+	    for (Koordinate k : libertiesBeli) {
+	        System.out.println(k);
+	    }
+	    
+	    System.out.println("Liberties of Crni:");
+	    for (Koordinate k : libertiesCrni) {
+	        System.out.println(k);
+	    }
+	    
+	    System.out.println("Ogrozene Bele:");
+	    for (Koordinate k : ogrozeneBele) {
+	        System.out.println(k);
+	    }
+	    
+	    System.out.println("Ogrozene Crne:");
+	    for (Koordinate k : ogrozeneCrne) {
+	        System.out.println(k);
+	    }
+	    
+	    System.out.println("Bele Grupe:");
+	    for (List<Koordinate> list : beleGrupe) {
+	        System.out.println(list);
+	    }
+	    
+	    System.out.println("Crne Grupe:");
+	    for (List<Koordinate> list : crneGrupe) {
+	        System.out.println(list);
+	    }
+	    
+	    System.out.println("Ujete Bele:");
+	    for (List<Koordinate> list : ujeteBele) {
+	        System.out.println(list);
+	    }
+	    
+	    System.out.println("Ujete Crne:");
+	    for (List<Koordinate> list : ujeteCrne) {
+	        System.out.println(list);
+	    }
+	    
+	    System.out.println("Number of captured Belih: " + stUjetihBelih);
+	    System.out.println("Number of captured Crnih: " + stUjetihCrnih);
+	    System.out.println("Number of Belih on board: " + stBelihNaPlosci);
+	    System.out.println("Number of Crnih on board: " + stCrnihNaPlosci);
+	    
+	    System.out.println("-----------------------");
+	}
+
 }
 
 

@@ -17,4 +17,9 @@ public class Polje { //polje je mreža
 	public void dodajZeton(Zeton zeton, int x, int y) {
 		mreza[x][y] = zeton;
 	}
+	public void dodajZetonKoord(Zeton zeton, Koordinate koord) {
+		int x = koord.getX();
+		int y = koord.getY();
+		mreza[x][y] = zeton;
+	}
 }

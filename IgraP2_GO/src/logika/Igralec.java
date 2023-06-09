@@ -18,7 +18,7 @@ public enum Igralec { //tk ko da bi par konstant si definiru in not daš par mo�
 		return (this == WHITE ? "Beli" : "Črni");
 	}
 	
-	public Koordinate getOgrozena() {
-		return (this == WHITE ? Vodja.igra.ogrozenaBela : Vodja.igra.ogrozenaCrna);
-	}
+	//public Koordinate getOgrozena() {
+	//	return (this == WHITE ? Vodja.igra.ogrozenaBela : Vodja.igra.ogrozenaCrna);
+	//}
 }

@@ -20,35 +20,35 @@ public class OceniPozicijo {
 	public static int oceniPozicijo(Igra igra, Igralec igralec){
 		Igralec naPotezi = igra.igralecNaPotezi;
 		if (igralec == Igralec.BLACK) {
-			if (igra.stanje == igra.stanje.win_black) return 1000;
-			if (igra.stanje == igra.stanje.win_white) return -1000;
+			//if (igra.stanje == igra.stanje.win_black) return 1000;
+			//if (igra.stanje == igra.stanje.win_white) return -1000;
 			
 			if (igra.igralecNaPotezi == Igralec.WHITE) {
-				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -1000;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 200;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
+				if (igra.ogrozeneBele == null && igra.ogrozeneCrne != null) return -1000;
+				//if (igra.ogrozeneBele != null && igra.ogrozeneCrne == null) ocena += 200;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne != null) return -1000;
 			}
 			else if (igra.igralecNaPotezi == Igralec.BLACK) {
-				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -200;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return 1000;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+				//if (igra.ogrozeneBele == null && igra.ogrozeneCrne != null) ocena -= 200;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne == null) return 1000;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne != null) return 1000;
 			}
 			
 			
 		}
 		if (igralec == Igralec.WHITE) {
-			if (igra.stanje == igra.stanje.win_white) return 1000;
-			if (igra.stanje == igra.stanje.win_black) return -1000;
+			//if (igra.stanje == igra.stanje.win_white) return 1000;
+			//if (igra.stanje == igra.stanje.win_black) return -1000;
 			
 			if (igra.igralecNaPotezi == Igralec.WHITE) {
-				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return 1000;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -200;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return 1000;
+				if (igra.ogrozeneBele == null && igra.ogrozeneCrne != null) return 1000;
+				//if (igra.ogrozeneBele != null && igra.ogrozeneCrne == null) return -200;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne != null) return 1000;
 			}
 			else if (igra.igralecNaPotezi == Igralec.BLACK) {
-				if (igra.ogrozenaBela == null && igra.ogrozenaCrna != null) return -200;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna == null) return -1000;
-				if (igra.ogrozenaBela != null && igra.ogrozenaCrna != null) return -1000;
+				//if (igra.ogrozeneBele == null && igra.ogrozeneCrne != null) return -200;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne == null) return -1000;
+				if (igra.ogrozeneBele != null && igra.ogrozeneCrne != null) return -1000;
 			}
 			
 			
@@ -121,4 +121,5 @@ public class OceniPozicijo {
 		return ocena;
 		
 	}
+	
 }
