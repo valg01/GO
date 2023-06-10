@@ -73,7 +73,7 @@ public class Igra {
 	}
 	
 	public boolean jeVeljavna(Poteza poteza) { //pogleda, če je ta ko ga igraš null, če ne nemorš odigrat
-		if (grid.mreza[poteza.x()][poteza.y()] == null) return true;
+		if (poteza.pass()==true || grid.mreza[poteza.x()][poteza.y()] == null) return true;
 		return false;
 	}
 	
@@ -89,13 +89,19 @@ public class Igra {
 	}
 	
 	public boolean odigraj(Poteza p) {
-		//System.out.println("v odigraj");
-		//System.out.println(this);
+		
+		
+		
+		
+		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
+		
+		if (p.pass()) {
+			zamenjajIgralca();
+			return true;
+		}
 		
 		int x = p.x();
 		int y = p.y();
-		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
-		
 		if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
 			grid.mreza[x][y] = Zeton.BLACK;
 			igralecNaPotezi = Igralec.WHITE;

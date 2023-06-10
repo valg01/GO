@@ -32,6 +32,9 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	
 	private JLabel status;
 	
+	private JButton passButton;
+
+	
 	public GlavnoOknoIgre() {
 		
 		super();
@@ -121,7 +124,20 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 
         // Add the main panel to the frame
         //this.add(mainPanel);
-		
+        
+        passButton = new JButton("Pass");
+        
+        passButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                splosno.Poteza passMove = new splosno.Poteza(-1, -1, true);
+               
+                Vodja.igra.odigraj(passMove);
+            }
+        });
+
+        getContentPane().add(passButton, BorderLayout.SOUTH);
 		
 
 	
@@ -197,6 +213,8 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			Vodja.igramoNovoIgro();
 			
 		}
+		
+		
 		repaint();
 		
 	}

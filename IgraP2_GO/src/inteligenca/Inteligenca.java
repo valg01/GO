@@ -105,7 +105,7 @@ public class Inteligenca extends KdoIgra {
 		
 		List<Koordinate> moznePoteze = igra.prostaMesta(); 
 		List<Koordinate> verjetne = igra.najboljVerjetne(); //množica mest ki imajo zasedeno polje za soseda
-		Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
+		//Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
 		
 		
 		for (Koordinate k: verjetne) {

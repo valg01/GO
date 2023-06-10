@@ -147,7 +147,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				
 					
 				//}
-
+				
 
 			}
 		}
