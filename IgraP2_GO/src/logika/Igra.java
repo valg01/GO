@@ -121,7 +121,7 @@ public static int velikost = 9;
 	}
 	
 	public boolean jeVeljavna(Poteza poteza) { //pogleda, če je ta ko ga igraš null, če ne nemorš odigrat
-		if (!poteza.pass() && predzadnjaPoteza == poteza) return false; // KO RULE 
+		if (!poteza.pass() && poteza.equals(predzadnjaPoteza)) return false; // KO RULE 
 		if (poteza.pass()==true || grid.mreza[poteza.x()][poteza.y()] == null) return true;
 		return false;
 	}
@@ -145,6 +145,8 @@ public static int velikost = 9;
 		
 		if (p.pass()) {
 			zamenjajIgralca();
+			
+			
 			
 		} else {
 			if (jeDovoljenSuicideMove(p)) { //posebej obravnavan suicide move, ki je mogoč samo v primeru če capturaš nasprotnika
@@ -174,10 +176,10 @@ public static int velikost = 9;
 			updateNullGrupe(); //to bo nakoncu sam ob koncu igre
 			updateUjete();
 			updateLiberties();
-			updateStanje();
-			stevec++;
 		}
 		
+		updateStanje();
+		stevec++;
 		printInfo();
 		return true;
 	}
