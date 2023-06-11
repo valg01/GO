@@ -10,6 +10,18 @@ public class Polje { //polje je mreža
 		this.mreza = new Zeton[velikost][velikost];
 	}
 	
+	public Polje(Polje original) { //copy constructor
+        this.velikost = original.velikost;
+        this.mreza = new Zeton[original.velikost][original.velikost];
+        for (int i = 0; i < original.velikost; i++) {
+            for (int j = 0; j < original.velikost; j++) {
+                this.mreza[i][j] = original.mreza[i][j];
+            }
+        }
+    }
+	
+	
+	
 	public Zeton naMestu(int x, int y) {
 		return mreza[x][y];
 	}

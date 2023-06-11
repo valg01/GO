@@ -1,57 +1,105 @@
 package logika;
 
 import java.util.ArrayList;
+
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import splosno.Poteza;
+import vodja.Vodja;
 
 public class Igra {
 	
-	public static int velikost = 9;
+public static int velikost = 9;
+    
+    public int stevec;
+    public Polje grid;
+    public Stanje stanje;
+    public Igralec igralecNaPotezi;
+    public List<Koordinate> libertiesBeli;
+    public List<Koordinate> libertiesCrni;
+    public List<Koordinate> ogrozeneBele;
+    public List<Koordinate> ogrozeneCrne;
+    public List<List<Koordinate>> beleGrupe;
+    public List<List<Koordinate>> crneGrupe;
+    public List<List<Koordinate>> nullGrupe;
+    public List<List<Koordinate>> ujeteBele;
+    public List<List<Koordinate>> ujeteCrne;
+    public int stUjetihBelihZetonov;
+    public int stUjetihCrnihZetonov;
+    public int stBelihNaPlosci;
+    public int stCrnihNaPlosci;
+    public int vrednostPozicijeBeli;
+    public Poteza zadnjaPoteza;
+    public Poteza predzadnjaPoteza;
+    
+	public List<Koordinate> ujetaSSuecidom; //ce se zgodi suecide move, torej da "žrtvuješ" nek svoj žeton oz ga postaviš v "ujeto" polje da ujameš tujo grupo, bo to poskrbelo da odstrani nasprotnikovega
+	public List<Koordinate> zascitena;
+
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 1. KONSTRUKTOR IN OSNOVNE FUNKCIJE IGRE
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public int stevec = 0;
-	
-	public Polje grid;
-	
-	public Stanje stanje;
-	
-	public Igralec igralecNaPotezi;
-	
-	public List<Koordinate> libertiesBeli = new ArrayList<Koordinate>();
-	public List<Koordinate> libertiesCrni = new ArrayList<Koordinate>();
-	
-	public List<Koordinate> ogrozeneBele;
-	public List<Koordinate> ogrozeneCrne;
-	
-	public List<List<Koordinate>> beleGrupe;
-	public List<List<Koordinate>> crneGrupe;
-	
-	public List<List<Koordinate>> ujeteBele = new ArrayList<List<Koordinate>>();
-	public List<List<Koordinate>> ujeteCrne = new ArrayList<List<Koordinate>>();
-	
-	public int stUjetihBelih;
-	public int stUjetihCrnih;
-	
-	public int stBelihNaPlosci;
-	public int stCrnihNaPlosci;
-	
-	public Koordinate zadnjaPoteza;
-	
-	public Igra() {
-		grid = new Polje(velikost);
-		for (int i = 0; i < velikost; i ++) {
-			for (int j = 0; j < velikost; j ++) {
-				grid.mreza[i][j] = null;
-			}
-		}
-		igralecNaPotezi = Igralec.BLACK;
-		stanje = Stanje.in_progress;
-		
-	}
-	
+     public Igra() {
+        stevec = 0;
+        grid = new Polje(velikost);
+        for (int i = 0; i < velikost; i ++) {
+            for (int j = 0; j < velikost; j ++) {
+                grid.mreza[i][j] = null;
+            }
+        }
+        stanje = Stanje.in_progress;
+        igralecNaPotezi = Igralec.BLACK;
+
+        libertiesBeli = new ArrayList<>();
+        libertiesCrni = new ArrayList<>();
+        ogrozeneBele = new ArrayList<>();
+        ogrozeneCrne = new ArrayList<>();
+        beleGrupe = new ArrayList<>();
+        crneGrupe = new ArrayList<>();
+        nullGrupe = new ArrayList<>();
+        ujeteBele = new ArrayList<>();
+        ujeteCrne = new ArrayList<>();
+
+        stUjetihBelihZetonov = 0;
+        stUjetihCrnihZetonov = 0;
+        stBelihNaPlosci = 0;
+        stCrnihNaPlosci = 0;
+        vrednostPozicijeBeli = stBelihNaPlosci;
+        zadnjaPoteza = null;
+        predzadnjaPoteza = null;
+        
+        
+    }
+
+    public Igra(Igra original) { //copy constructor, ki ga potrebujemo za suicide move
+        stevec = original.stevec;
+        grid = new Polje(original.grid); //Assuming Polje has a copy constructor
+        stanje = original.stanje;
+        igralecNaPotezi = original.igralecNaPotezi;
+
+        libertiesBeli = new ArrayList<>(original.libertiesBeli);
+        libertiesCrni = new ArrayList<>(original.libertiesCrni);
+        ogrozeneBele = new ArrayList<>(original.ogrozeneBele);
+        ogrozeneCrne = new ArrayList<>(original.ogrozeneCrne);
+        beleGrupe = new ArrayList<>(original.beleGrupe);
+        crneGrupe = new ArrayList<>(original.crneGrupe);
+        nullGrupe = new ArrayList<>(original.nullGrupe);
+        ujeteBele = new ArrayList<>(original.ujeteBele);
+        ujeteCrne = new ArrayList<>(original.ujeteCrne);
+
+        stUjetihBelihZetonov = original.stUjetihBelihZetonov;
+        stUjetihCrnihZetonov = original.stUjetihCrnihZetonov;
+        stBelihNaPlosci = original.stBelihNaPlosci;
+        stCrnihNaPlosci = original.stCrnihNaPlosci;
+        vrednostPozicijeBeli = original.vrednostPozicijeBeli;
+        zadnjaPoteza = original.zadnjaPoteza; // Assuming Poteza is immutable or has a copy constructor
+        predzadnjaPoteza = original.predzadnjaPoteza; // Assuming Poteza is immutable or has a copy constructor
+
+    }
+    
 	public Igralec naPotezi() {
 		return igralecNaPotezi;
 	}
@@ -73,10 +121,10 @@ public class Igra {
 	}
 	
 	public boolean jeVeljavna(Poteza poteza) { //pogleda, če je ta ko ga igraš null, če ne nemorš odigrat
+		if (!poteza.pass() && predzadnjaPoteza == poteza) return false; // KO RULE 
 		if (poteza.pass()==true || grid.mreza[poteza.x()][poteza.y()] == null) return true;
 		return false;
 	}
-	
 	
 	public void zamenjajIgralca() {
 		if(igralecNaPotezi == Igralec.BLACK) {
@@ -90,45 +138,105 @@ public class Igra {
 	
 	public boolean odigraj(Poteza p) {
 		
-		
-		
-		
 		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
+		
+		predzadnjaPoteza = zadnjaPoteza;
+		zadnjaPoteza = p;
 		
 		if (p.pass()) {
 			zamenjajIgralca();
-			return true;
+			
+		} else {
+			if (jeDovoljenSuicideMove(p)) { //posebej obravnavan suicide move, ki je mogoč samo v primeru če capturaš nasprotnika
+				zascitena = grupa(p.getKoordinate());
+			}
+			
+			int x = p.x();
+			int y = p.y();
+			
+			grid.mreza[x][y] = igralecNaPotezi.getZeton();
+			zamenjajIgralca();
+			
+			
+			
+			//if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
+			//	grid.mreza[x][y] = Zeton.BLACK;
+			//	igralecNaPotezi = Igralec.WHITE;
+			//	stCrnihNaPlosci += 1;
+			//}
+			//else if ( igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
+			//	grid.mreza[x][y] = Zeton.WHITE;
+			//	igralecNaPotezi = Igralec.BLACK;
+			//	stBelihNaPlosci += 1;
+			//}
+			
+			updateGrupe();
+			updateNullGrupe(); //to bo nakoncu sam ob koncu igre
+			updateUjete();
+			updateLiberties();
+			updateStanje();
+			stevec++;
 		}
-		
-		int x = p.x();
-		int y = p.y();
-		if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
-			grid.mreza[x][y] = Zeton.BLACK;
-			igralecNaPotezi = Igralec.WHITE;
-			stCrnihNaPlosci += 1;
-		}
-		else if ( igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
-			grid.mreza[x][y] = Zeton.WHITE;
-			igralecNaPotezi = Igralec.BLACK;
-			stBelihNaPlosci += 1;
-		}
-		
-		updateGrupe();
-		updateUjete();
-		updateLiberties();
-		//System.out.print(zmagovalec());
-		stevec++;
-		//System.out.println(stevec);
 		
 		printInfo();
 		return true;
 	}
 
-	
-	
+	public boolean OdigrajVKopiji(Poteza p) {
+		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
+		
+		predzadnjaPoteza = zadnjaPoteza;
+		zadnjaPoteza = p;
+		
+		if (p.pass()) {
+			zamenjajIgralca();
+		
+		} else {
+		
+			int x = p.x();
+			int y = p.y();
+			if (igralecNaPotezi == Igralec.BLACK && grid.mreza[x][y] == null) {
+				grid.mreza[x][y] = Zeton.BLACK;
+				igralecNaPotezi = Igralec.WHITE;
+				stCrnihNaPlosci += 1;
+			}
+			else if ( igralecNaPotezi == Igralec.WHITE && grid.mreza[x][y] == null) {
+				grid.mreza[x][y] = Zeton.WHITE;
+				igralecNaPotezi = Igralec.BLACK;
+				stBelihNaPlosci += 1;
+			}
+		}
+		
+		updateGrupe();
+		//updateNullGrupe(); //to bo nakoncu sam ob koncu igre
+		updateUjeteBrezOdstranjevanja(p.getKoordinate());
+		//updateLiberties();
+		//updateStanje();
+		stevec++;
+		
+		//printInfo();
+		return true;
+	}
 
+		
+		
+		
+		
+		
+		
 	
-	public List<Koordinate> najdiSosede(Koordinate koord) {
+	
+	
+	
+	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 2. GRUPIRANJE IN UJETOST
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+ 	public List<Koordinate> najdiSosedeIsteBarve(Koordinate koord) {
         int x = koord.getX();
         int y = koord.getY();
         Zeton zeton = grid.mreza[x][y];
@@ -136,12 +244,6 @@ public class Igra {
         //sosedi.add(koord);
         if (velikost - x - 1 > 0 && grid.mreza[x + 1][y] == zeton) {
             sosedi.add(koord.desna());
-            //System.out.println("v sosedih");
-            //System.out.println(x);
-            //System.out.println(y);
-            //System.out.println(zeton);
-            //System.out.println(grid.mreza[x + 1][y]);
-            //System.out.println();
         }
         if (x != 0 && grid.mreza[x - 1][y] == zeton) {
             sosedi.add(koord.leva());
@@ -152,9 +254,10 @@ public class Igra {
         if (y != 0 && grid.mreza[x][y - 1] == zeton) {
             sosedi.add(koord.zgornja());
         }
-        //System.out.print(sosedi);
+
         return sosedi;
     }
+	
 	public boolean imaLiberties(Koordinate koord) {
         int x = koord.getX();
         int y = koord.getY();
@@ -174,6 +277,301 @@ public class Igra {
         
         return false;
     }
+	
+	public boolean jeDovoljenSuicideMove(Poteza p) {
+	    Igra copyIgra = new Igra(this);
+
+	    Igralec igralec = igralecNaPotezi;
+
+	    if (p.pass()) return false;
+
+	    int stUjetihPrej = copyIgra.getUjete(igralec).size();   
+	    List<List<Koordinate>> ujetePrejNasprotnik = copyIgra.getUjete(igralec.nasprotnik());
+	    int stUjetihPrejNasprotnik = ujetePrejNasprotnik.size();
+
+	    copyIgra.OdigrajVKopiji(p);
+
+	    int stUjetihPotem = copyIgra.getUjete(igralec).size();
+	    List<List<Koordinate>> ujetePotemNasprotnik = copyIgra.getUjete(igralec.nasprotnik());
+	    int stUjetihPotemNasprotnik = copyIgra.getUjete(igralec.nasprotnik()).size();
+
+	    //System.out.println("Number of captured before move for current player: " + stUjetihPrej);
+	    //System.out.println("Number of captured before move for opponent: " + stUjetihPrejNasprotnik);
+	    //System.out.println("Number of captured after move for current player: " + stUjetihPotem);
+	    //System.out.println("Number of captured after move for opponent: " + stUjetihPotemNasprotnik);
+	    //System.out.println();
+
+	    if (stUjetihPotem > stUjetihPrej && stUjetihPotemNasprotnik > stUjetihPrejNasprotnik) {
+	        // Create a copy of ujetePotemNasprotnik and remove elements from it that are in ujetePrejNasprotnik
+	    	//System.out.println(igralec);
+	    	//System.out.println(ujetePrejNasprotnik);
+	    	//System.out.println(ujetePotemNasprotnik);
+	    	
+	        //List<List<Koordinate>> copyUjetePotemNasprotnik = new ArrayList<>(ujetePotemNasprotnik);
+	        //copyUjetePotemNasprotnik.removeAll(ujetePrejNasprotnik);
+	        
+	        // Now, copyUjetePotemNasprotnik contains the extra captured group of the opponent
+	        //List<Koordinate> novaUjeta = copyUjetePotemNasprotnik.get(0);  // get the remaining element
+	        //ujetaSSuecidom = novaUjeta;
+	        
+	        
+	        return true;
+	    }
+	    return false;
+	}
+
+
+	
+	public List<Koordinate> grupa(Koordinate koord) {
+	    List<Koordinate> grupa = new ArrayList<>();
+	    grupa.add(koord);
+	    return grupaAux(koord, grupa);
+	}
+
+	private List<Koordinate> grupaAux(Koordinate koord, List<Koordinate> grupa) {
+	    List<Koordinate> sosedi = najdiSosedeIsteBarve(koord);
+
+	    for (Koordinate sosed : sosedi) {
+	        if (!grupa.contains(sosed)) {
+	            grupa.add(sosed);
+	            //System.out.println(grupa);
+	            grupa = grupaAux(sosed, grupa);
+	            
+	        }
+	    }
+	    
+	    return grupa; 
+	}
+	
+	
+	public void updateGrupe() {
+	    beleGrupe = new ArrayList<>();
+	    crneGrupe = new ArrayList<>();
+	    ogrozeneBele = new ArrayList<>();
+	    ogrozeneCrne = new ArrayList<>();
+	    
+	    stBelihNaPlosci = 0;
+	    stCrnihNaPlosci = 0;
+
+	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
+	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
+	  
+	    for (int i = 0; i < velikost; i++) {
+	        for (int j = 0; j < velikost; j++) {
+	            Zeton zeton = grid.mreza[i][j];
+	            List<Koordinate> grup = grupa(new Koordinate(i, j));
+	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
+	            List<Koordinate> libertiesGrupa = libertiesGrupa(grup);
+	            
+	            if (zeton == Zeton.BLACK && !crneSet.contains(grupSet)) {
+	            	stCrnihNaPlosci += 1;
+	                crneGrupe.add(grup);
+	                crneSet.add(grupSet);
+	                if (libertiesGrupa.size()==1) {
+	                    ogrozeneCrne.add(libertiesGrupa.get(0));
+	                }
+	            } else if (zeton == Zeton.WHITE && !beleSet.contains(grupSet)) {
+	            	stBelihNaPlosci += 1;
+	                beleGrupe.add(grup);
+	                beleSet.add(grupSet);
+	                if (libertiesGrupa.size()==1) {
+	                    ogrozeneBele.add(libertiesGrupa.get(0));
+	                }
+	            }
+	        }
+	    }
+	}
+	
+	public boolean ujeta(List<Koordinate> grupa) {
+		for (Koordinate koord : grupa) {
+			if (imaLiberties(koord)) return false;
+		}
+		return true;
+	}
+	
+	
+	public void updateUjete() {
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (grupa.equals(zascitena)) {
+				System.out.println(grupa);
+				System.out.print(zascitena);
+				continue;
+			}
+			if (ujeta(grupa)) {
+				ujeteBele.add(grupa);
+				
+				for (Koordinate koord : grupa) {
+					
+					grid.dodajZetonKoord(null, koord);
+					stUjetihBelihZetonov += 1;
+					stBelihNaPlosci -= 1;
+				}
+				updateGrupe();
+				
+			}
+		}
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (grupa == zascitena) continue;
+			if (ujeta(grupa)) {
+				ujeteCrne.add(grupa);	
+				for (Koordinate koord : grupa) {
+					grid.dodajZetonKoord(null, koord);
+					stUjetihCrnihZetonov += 1;
+					stCrnihNaPlosci -= 1;
+				}
+				updateGrupe();
+				
+			}
+		}
+	
+		
+		
+	}
+	
+	public void updateUjeteBrezOdstranjevanja(Koordinate koord) {
+		if (koord == null) return;
+		
+		List<Koordinate> zascitena = grupa(koord);
+		
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (ujeta(grupa)) {
+				if (grupa != zascitena) {
+					ujeteBele.add(grupa);
+				}
+				//updateGrupe();
+			}
+		}
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (ujeta(grupa)) {
+				if (grupa != zascitena) {
+					ujeteCrne.add(grupa);
+				}
+				//updateGrupe();
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 3. VREDNOTENJE POZICIJE NA KONCU IN STANJE IGRE //
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	public HashSet<Zeton> barveSosedov(Koordinate koord){ //se aplicira na nullGrupo, da ugotovi kdo jo kontrolira
+		
+		int x = koord.getX();
+		int y = koord.getY();
+		HashSet<Zeton> colorSet = new HashSet<>();
+
+		// Check the neighbor to the right
+		if (x + 1 < 9 && (grid.mreza[x + 1][y] == Zeton.BLACK || grid.mreza[x + 1][y] == Zeton.WHITE)) {
+		    colorSet.add(grid.mreza[x + 1][y]);
+		}
+
+		// Check the neighbor to the left
+		if (x - 1 >= 0 && (grid.mreza[x - 1][y] == Zeton.BLACK || grid.mreza[x - 1][y] == Zeton.WHITE)) {
+		    colorSet.add(grid.mreza[x - 1][y]);
+		}
+
+		// Check the neighbor below
+		if (y + 1 < 9 && (grid.mreza[x][y + 1] == Zeton.BLACK || grid.mreza[x][y + 1] == Zeton.WHITE)) {
+		    colorSet.add(grid.mreza[x][y + 1]);
+		}
+
+		// Check the neighbor above
+		if (y - 1 >= 0 && (grid.mreza[x][y - 1] == Zeton.BLACK || grid.mreza[x][y - 1] == Zeton.WHITE)) {
+		    colorSet.add(grid.mreza[x][y - 1]);
+		}
+
+		return colorSet;
+	}
+	
+	public void updateNullGrupe() {
+	    nullGrupe = new ArrayList<>();
+	    Set<HashSet<Koordinate>> nullSet = new HashSet<>();
+
+	    for (int i = 0; i < velikost; i++) {
+	        for (int j = 0; j < velikost; j++) {
+	            Zeton zeton = grid.mreza[i][j];
+	            List<Koordinate> grup = grupa(new Koordinate(i, j));
+	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
+
+	            if (zeton == null && !nullSet.contains(grupSet)) {
+	                nullGrupe.add(grup);
+	                nullSet.add(grupSet);
+	            }
+	        }
+	    }
+	}
+	
+	public Igralec lastnikNullGrupe(List<Koordinate> grupa) { //kdo kontrolira teritorij, tudi to se preveri samo na koncu
+		HashSet<Zeton> barve = new HashSet<>();
+		for (Koordinate koord : grupa) {
+			barve.addAll(barveSosedov(koord));
+		}
+		
+		if (barve.size() == 1) {
+			return barve.iterator().next().getIgralec(); //pobere prvi (edini element iz barve, v primeru da je ta samo ena tj ena barva kontrolira nnullGrupo)
+		} else return null;
+		
+	}
+
+	public int vrednostPozicije(Igralec igralec) { //vrednost pozicije je dejanski score count, ni enako kot ocena pozicije ki upošteva še ugodnost postavitve in ostalo
+		int vrednost = 0;
+		
+		//koliko praznega teritorija obvladuje
+		for (List<Koordinate> grupa : nullGrupe) {
+			if (lastnikNullGrupe(grupa) == igralec) {
+				vrednost += grupa.size();
+			}
+		}	
+		
+		//koliko ima žetonov
+		if (igralec == igralec.WHITE) {
+			vrednost += stBelihNaPlosci;
+		} else {
+			vrednost += stCrnihNaPlosci;
+		}
+	
+		return vrednost;
+	}
+	
+	public void updateStanje() {
+		if (zadnjaPoteza != null && predzadnjaPoteza != null && zadnjaPoteza.pass() && predzadnjaPoteza.pass() || prostaMesta().isEmpty()) {
+			int beli = vrednostPozicije(Igralec.WHITE);
+			int crni = vrednostPozicije(Igralec.BLACK);
+			
+			if (beli > crni) stanje = Stanje.win_white;
+			else if (beli < crni) stanje = Stanje.win_black;
+			else if (beli == crni) stanje = Stanje.draw;
+		} else {
+			stanje = Stanje.in_progress;
+		}
+		
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 4. FUNKCIJE ZA INTELIGENCO
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public List<Koordinate> libertiesGrupa(List<Koordinate> grupa) {
 		List<Koordinate> liberties = new ArrayList<>();
@@ -203,8 +601,6 @@ public class Igra {
 		return liberties;
 	}
 	
-	
-	
 	public List<Koordinate> libertiesIgralec(Igralec igralec) {
 		List<Koordinate> vsiLiberties = new ArrayList<>();
 		if (igralec == Igralec.BLACK && crneGrupe != null) {
@@ -227,171 +623,14 @@ public class Igra {
 				}
 			}
 		}
+		
+
 		return vsiLiberties;
 	}
 	
 	public void updateLiberties() {
 		libertiesBeli = libertiesIgralec(Igralec.WHITE);
 		libertiesCrni = libertiesIgralec(Igralec.BLACK);
-	}
-	
-	
-	
-	public List<Koordinate> grupa(Koordinate koord) {
-	    List<Koordinate> grupa = new ArrayList<>();
-	    grupa.add(koord);
-	    return grupaAux(koord, grupa);
-	}
-
-	private List<Koordinate> grupaAux(Koordinate koord, List<Koordinate> grupa) {
-	    List<Koordinate> sosedi = najdiSosede(koord);
-
-	    for (Koordinate sosed : sosedi) {
-	        if (!grupa.contains(sosed)) {
-	            grupa.add(sosed);
-	            //System.out.println(grupa);
-	            grupa = grupaAux(sosed, grupa);
-	            
-	        }
-	    }
-	    return grupa;
-	}
-
-	
-	
-	
-	public void updateGrupe() {
-	    beleGrupe = new ArrayList<>();
-	    crneGrupe = new ArrayList<>();
-	    
-	    ogrozeneBele = new ArrayList<>();
-	    ogrozeneCrne = new ArrayList<>();
-
-	    Set<HashSet<Koordinate>> beleSet = new HashSet<>();
-	    Set<HashSet<Koordinate>> crneSet = new HashSet<>();
-	    
-	    //boolean naselOgrozenoBelo = false;
-	    //boolean naselOgrozenoCrno = false;
-	    
-	    
-	    		
-	    
-	    for (int i = 0; i < velikost; i++) {
-	        for (int j = 0; j < velikost; j++) {
-	            Zeton zeton = grid.mreza[i][j];
-	            List<Koordinate> grup = grupa(new Koordinate(i, j));
-	            HashSet<Koordinate> grupSet = new HashSet<>(grup);
-	            
-	            
-	            List<Koordinate> libertiesGrupa = libertiesGrupa(grup);
-	            
-	            if (zeton == zeton.BLACK && !crneSet.contains(grupSet)) {
-	                crneGrupe.add(grup);
-	                crneSet.add(grupSet);
-	                if (libertiesGrupa.size()==1) {
-	                	ogrozeneCrne.add(libertiesGrupa.get(0));
-	                	//ogrozenaCrna = libertiesGrupa.get(0);
-	                
-	     
-	                }
-	            
-	                
-	            } else if (zeton == zeton.WHITE && !beleSet.contains(grupSet)) {
-	                beleGrupe.add(grup);
-	                beleSet.add(grupSet);
-	                if (libertiesGrupa.size()==1) {
-	                	ogrozeneBele.add(libertiesGrupa.get(0));
-	                }
-	            }
-	            
-	        }
-	    }
-	    //if (!naselOgrozenoBelo) {
-	    //	ogrozeneBele = null;
-	    //}
-	    //if (!naselOgrozenoCrno) {
-	    //	ogrozeneCrne = null;
-	    //}
-	    
-		
-	}
-	
-	
-	public boolean ujeta(List<Koordinate> grupa) {
-		for (Koordinate koord : grupa) {
-			if (imaLiberties(koord)) return false;
-		}
-		return true;
-	}
-	
-	public Igralec zmagovalec() {
-		for (List<Koordinate> grupa : beleGrupe) {
-			if (ujeta(grupa)) return Igralec.BLACK;
-		}
-		for (List<Koordinate> grupa : crneGrupe) {
-			if (ujeta(grupa)) return Igralec.WHITE;
-		}
-		return null;
-	}
-	
-	public Stanje updateStanje() {
-		for (List<Koordinate> grupa : beleGrupe) {
-			if (ujeta(grupa)) {
-				ujeteBele.add(grupa);
-				stanje = Stanje.win_black;
-				return Stanje.win_black;
-			}
-		}
-		for (List<Koordinate> grupa : crneGrupe) {
-			if (ujeta(grupa)) {
-				ujeteCrne.add(grupa);
-				stanje = Stanje.win_white;
-				return Stanje.win_white;
-			}
-		}
-		
-		if (prostaMesta().isEmpty()) {
-			stanje = Stanje.draw;
-			return Stanje.draw;
-		}
-		stanje = Stanje.in_progress;
-		return Stanje.in_progress;
-		
-	}
-	
-	public Stanje updateUjete() {
-		for (List<Koordinate> grupa : beleGrupe) {
-			if (ujeta(grupa)) {
-				ujeteBele.add(grupa);
-				for (Koordinate koord : grupa) {
-					grid.dodajZetonKoord(null, koord);
-					stUjetihBelih += 1;
-					stBelihNaPlosci -= 1;
-				}
-				updateGrupe();
-				
-			}
-		}
-		for (List<Koordinate> grupa : crneGrupe) {
-			if (ujeta(grupa)) {
-				ujeteCrne.add(grupa);
-				for (Koordinate koord : grupa) {
-					grid.dodajZetonKoord(null, koord);
-					stUjetihCrnih += 1;
-					stCrnihNaPlosci -= 1;
-				}
-				updateGrupe();
-				
-			}
-		}
-		
-		if (prostaMesta().isEmpty()) {
-			stanje = Stanje.draw;
-			return Stanje.draw;
-		}
-		stanje = Stanje.in_progress;
-		return Stanje.in_progress;
-		
 	}
 	
 	public void nakljucnaPoteza() {
@@ -401,8 +640,6 @@ public class Igra {
 		Poteza p = new Poteza(koor.getX(), koor.getY());
 		odigraj(p);
 	}
-	
-	//public boolean konecIgre()
 	
 	public List<Koordinate> najboljVerjetne(){
 		ArrayList<Koordinate> merge = new ArrayList<Koordinate>();
@@ -416,8 +653,30 @@ public class Igra {
 		return libertiesIgralec(igralec).size();
 	}
 	
+	
+	
+	
+	
+	
+	
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// 5. IZPISOVANJE INFORMACIJ IN POMOŽNE FUNKCIJE
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public List<List<Koordinate>> getGrupe(Igralec igralec){
+		return (igralec == Igralec.WHITE ? beleGrupe : crneGrupe);
+	}
+	
+	public List<List<Koordinate>> getUjete(Igralec igralec){
+		return (igralec == Igralec.WHITE ? ujeteBele : ujeteCrne);
+	}
+	
+	
 	public void printInfo() {
 	    System.out.println("----- Information -----");
+	    
+	    
 	    
 	    System.out.println("Liberties of Beli:");
 	    for (Koordinate k : libertiesBeli) {
@@ -449,6 +708,14 @@ public class Igra {
 	        System.out.println(list);
 	    }
 	    
+	    
+	    System.out.println("Null Grupe (velikosti, lastnik):");
+	    
+	    for (List<Koordinate> list : nullGrupe) {
+	        System.out.print(list.size());
+	        System.out.println(", " + lastnikNullGrupe(list));
+	    }
+	    
 	    System.out.println("Ujete Bele:");
 	    for (List<Koordinate> list : ujeteBele) {
 	        System.out.println(list);
@@ -459,11 +726,13 @@ public class Igra {
 	        System.out.println(list);
 	    }
 	    
-	    System.out.println("Number of captured Belih: " + stUjetihBelih);
-	    System.out.println("Number of captured Crnih: " + stUjetihCrnih);
+	    System.out.println("Number of captured Belih: " + stUjetihBelihZetonov);
+	    System.out.println("Number of captured Crnih: " + stUjetihCrnihZetonov);
 	    System.out.println("Number of Belih on board: " + stBelihNaPlosci);
 	    System.out.println("Number of Crnih on board: " + stCrnihNaPlosci);
-	    
+	    System.out.println("Stanje: " + stanje);
+	    System.out.println("Predzadnja: " + predzadnjaPoteza);
+	    System.out.println("Zadnja: " + zadnjaPoteza);
 	    System.out.println("-----------------------");
 	}
 

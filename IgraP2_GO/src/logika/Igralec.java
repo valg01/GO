@@ -1,6 +1,8 @@
 package logika;
 
 import vodja.Vodja;
+import java.util.List;
+
 
 public enum Igralec { //tk ko da bi par konstant si definiru in not daš par možnih vrednosti
 	WHITE, BLACK;
@@ -17,6 +19,17 @@ public enum Igralec { //tk ko da bi par konstant si definiru in not daš par mo�
 	public String toString() {
 		return (this == WHITE ? "Beli" : "Črni");
 	}
+	
+	public List<List<Koordinate>> getGrupe(){
+		return (this == WHITE ? Vodja.igra.beleGrupe : Vodja.igra.crneGrupe);
+	}
+	
+	public List<List<Koordinate>> getUjete(){
+		return (this == WHITE ? Vodja.igra.ujeteBele : Vodja.igra.ujeteCrne);
+	}
+	
+	
+	
 	
 	//public Koordinate getOgrozena() {
 	//	return (this == WHITE ? Vodja.igra.ogrozenaBela : Vodja.igra.ogrozenaCrna);

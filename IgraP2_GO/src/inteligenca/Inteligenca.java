@@ -79,25 +79,25 @@ public class Inteligenca extends KdoIgra {
 		
 		if (igra.naPotezi() == igralec) {ocena = PORAZ;} else {ocena = ZMAGA;}
 		
-		Koordinate ogrozenaNasprotnik = igralec.nasprotnik().getOgrozena();
-		if (ogrozenaNasprotnik != null) {
-			int x = ogrozenaNasprotnik.getX();
-			int y = ogrozenaNasprotnik.getY();
-			
-			Poteza p = new Poteza(x, y);
-			return new OcenjenaPoteza (p, ocena);
-		}
+		//Koordinate ogrozenaNasprotnik = igralec.nasprotnik().getOgrozena();
+		//if (ogrozenaNasprotnik != null) {
+		//	int x = ogrozenaNasprotnik.getX();
+		//	int y = ogrozenaNasprotnik.getY();
+		//	
+		//	Poteza p = new Poteza(x, y);
+		//	return new OcenjenaPoteza (p, ocena);
+		//}
 		
 		
-		Koordinate ogrozena = igralec.getOgrozena();
-		if (ogrozena != null) {
-			//System.out.println(ogrozena);
-			int x = ogrozena.getX();
-			int y = ogrozena.getY();
-			
-			Poteza p = new Poteza(x, y);
-			return new OcenjenaPoteza (p, ocena);
-		}
+		//Koordinate ogrozena = igralec.getOgrozena();
+		//if (ogrozena != null) {
+		//	//System.out.println(ogrozena);
+		//	int x = ogrozena.getX();
+		//	int y = ogrozena.getY();
+		//	
+		//	Poteza p = new Poteza(x, y);
+		//	return new OcenjenaPoteza (p, ocena);
+		//}
 		
 		
 		

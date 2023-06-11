@@ -134,6 +134,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
                 splosno.Poteza passMove = new splosno.Poteza(-1, -1, true);
                
                 Vodja.igra.odigraj(passMove);
+                Vodja.igramo();
             }
         });
 

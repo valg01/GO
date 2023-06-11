@@ -1,4 +1,5 @@
 package splosno;
+import logika.Koordinate;
 
 public record Poteza(int x, int y, boolean pass) {
     // Constructor for moves that aren't a pass
@@ -10,6 +11,12 @@ public record Poteza(int x, int y, boolean pass) {
     public Poteza() {
         this(-1, -1, true);
     }
+    
+    public Koordinate getKoordinate() {
+    	return (pass ? null : new Koordinate(x,y));
+    }
+    
+  
 }
 
 
