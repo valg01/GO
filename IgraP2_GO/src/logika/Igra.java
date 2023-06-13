@@ -35,14 +35,13 @@ public static int velikost = 9;
     public Poteza zadnjaPoteza;
     public Poteza predzadnjaPoteza;
     
-	public List<Koordinate> ujetaSSuecidom; //ce se zgodi suecide move, torej da "žrtvuješ" nek svoj žeton oz ga postaviš v "ujeto" polje da ujameš tujo grupo, bo to poskrbelo da odstrani nasprotnikovega
-	public List<Koordinate> zascitena;
+	public List<List<Koordinate>> zascitene;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	// 1. KONSTRUKTOR IN OSNOVNE FUNKCIJE IGRE
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-     public Igra() {
+    public Igra() {
         stevec = 0;
         grid = new Polje(velikost);
         for (int i = 0; i < velikost; i ++) {
@@ -70,6 +69,8 @@ public static int velikost = 9;
         vrednostPozicijeBeli = stBelihNaPlosci;
         zadnjaPoteza = null;
         predzadnjaPoteza = null;
+        zascitene = new ArrayList<>();
+     
         
         
     }
@@ -97,7 +98,7 @@ public static int velikost = 9;
         vrednostPozicijeBeli = original.vrednostPozicijeBeli;
         zadnjaPoteza = original.zadnjaPoteza; // Assuming Poteza is immutable or has a copy constructor
         predzadnjaPoteza = original.predzadnjaPoteza; // Assuming Poteza is immutable or has a copy constructor
-
+        
     }
     
 	public Igralec naPotezi() {
@@ -121,6 +122,7 @@ public static int velikost = 9;
 	}
 	
 	public boolean jeVeljavna(Poteza poteza) { //pogleda, če je ta ko ga igraš null, če ne nemorš odigrat
+		if (jeSuicideMove(poteza)) return false;
 		if (!poteza.pass() && poteza.equals(predzadnjaPoteza)) return false; // KO RULE 
 		if (poteza.pass()==true || grid.mreza[poteza.x()][poteza.y()] == null) return true;
 		return false;
@@ -149,9 +151,11 @@ public static int velikost = 9;
 			
 			
 		} else {
-			if (jeDovoljenSuicideMove(p)) { //posebej obravnavan suicide move, ki je mogoč samo v primeru če capturaš nasprotnika
-				zascitena = grupa(p.getKoordinate());
-			}
+			Boolean jeDovoljenSsm = jeDovoljenSuicideMove(p);
+			
+			if (jeDovoljenSsm) { //posebej obravnavan suicide move, ki je mogoč samo v primeru če capturaš nasprotnik
+				zascitene.add(grupa(p.getKoordinate()));
+			} 
 			
 			int x = p.x();
 			int y = p.y();
@@ -176,6 +180,10 @@ public static int velikost = 9;
 			updateNullGrupe(); //to bo nakoncu sam ob koncu igre
 			updateUjete();
 			updateLiberties();
+			
+			if (jeDovoljenSsm) {
+				zascitene.remove(grupa(p.getKoordinate())); //ko se odigra ni več zaščitena
+			}
 		}
 		
 		updateStanje();
@@ -185,7 +193,7 @@ public static int velikost = 9;
 	}
 
 	public boolean OdigrajVKopiji(Poteza p) {
-		if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
+		//if (!jeVeljavna(p) || !(stanje == Stanje.in_progress || stanje == null)) return false; //pogleda če lahk odigra
 		
 		predzadnjaPoteza = zadnjaPoteza;
 		zadnjaPoteza = p;
@@ -210,7 +218,7 @@ public static int velikost = 9;
 		}
 		
 		updateGrupe();
-		//updateNullGrupe(); //to bo nakoncu sam ob koncu igre
+		updateNullGrupe(); //to bo nakoncu sam ob koncu igre
 		updateUjeteBrezOdstranjevanja(p.getKoordinate());
 		//updateLiberties();
 		//updateStanje();
@@ -321,10 +329,44 @@ public static int velikost = 9;
 	    }
 	    return false;
 	}
+	public boolean jeSuicideMove(Poteza p) {
+		Igra copyIgra = new Igra(this);
+
+	    Igralec igralec = igralecNaPotezi;
+
+	    if (p.pass()) return false;
+
+	    int stUjetihPrej = copyIgra.getUjete(igralec).size();   
+	    List<List<Koordinate>> ujetePrejNasprotnik = copyIgra.getUjete(igralec.nasprotnik());
+	    int stUjetihPrejNasprotnik = ujetePrejNasprotnik.size();
+
+	    copyIgra.OdigrajVKopiji(p);
+
+	    int stUjetihPotem = copyIgra.getUjete(igralec).size();
+	    List<List<Koordinate>> ujetePotemNasprotnik = copyIgra.getUjete(igralec.nasprotnik());
+	    int stUjetihPotemNasprotnik = ujetePotemNasprotnik.size();
 
 
+	    if (stUjetihPotem > stUjetihPrej && stUjetihPotemNasprotnik <= stUjetihPrejNasprotnik) {
+	        
+	        return true;
+	    }
+	    return false;
+	}
 	
-	public List<Koordinate> grupa(Koordinate koord) {
+	public Zeton barvaGrupe(List<Koordinate> grupa) {
+		Koordinate koord = grupa.get(0);
+		return grid.naMestuKoord(koord);
+	}
+	
+	public void odstraniGrupo(List<Koordinate> grupa) {
+		for (Koordinate koord : grupa) {
+			grid.dodajZetonKoord(null, koord);
+		}
+		updateGrupe();
+	}
+	
+ 	public List<Koordinate> grupa(Koordinate koord) {
 	    List<Koordinate> grupa = new ArrayList<>();
 	    grupa.add(koord);
 	    return grupaAux(koord, grupa);
@@ -384,9 +426,35 @@ public static int velikost = 9;
 	    }
 	}
 	
+	
+	public boolean staSosednjiGrupi(List<Koordinate> g1, List<Koordinate> g2) {
+		for (Koordinate koord : g1) {
+			for (Koordinate sosed : koord.sosedi()) {
+				if (g2.contains(sosed)) return true;
+			}
+		}
+		return false;
+	}
+	
+	
+	public boolean imaDveUcki(List<Koordinate> grupa) {
+		Koordinate koord = grupa.get(0);
+		Igralec igralec = grid.mreza[koord.getX()][koord.getY()].getIgralec();
+		
+		int stVsebovanihNullGrup = 0;
+		for (List<Koordinate> ngrup : nullGrupe) {
+			if (lastnikNullGrupe(ngrup) == igralec && staSosednjiGrupi(ngrup, grupa)) {
+				stVsebovanihNullGrup += 1;
+			}
+		}
+		if (stVsebovanihNullGrup >= 2) return true;
+		return false;
+	}
+	
 	public boolean ujeta(List<Koordinate> grupa) {
 		for (Koordinate koord : grupa) {
 			if (imaLiberties(koord)) return false;
+			//if (imaDveUcki(grupa)) return false;
 		}
 		return true;
 	}
@@ -394,9 +462,7 @@ public static int velikost = 9;
 	
 	public void updateUjete() {
 		for (List<Koordinate> grupa : beleGrupe) {
-			if (grupa.equals(zascitena)) {
-				System.out.println(grupa);
-				System.out.print(zascitena);
+			if (zascitene.contains(grupa)) {
 				continue;
 			}
 			if (ujeta(grupa)) {
@@ -413,7 +479,7 @@ public static int velikost = 9;
 			}
 		}
 		for (List<Koordinate> grupa : crneGrupe) {
-			if (grupa == zascitena) continue;
+			if (zascitene.contains(grupa)) continue;
 			if (ujeta(grupa)) {
 				ujeteCrne.add(grupa);	
 				for (Koordinate koord : grupa) {
@@ -454,7 +520,11 @@ public static int velikost = 9;
 	}
 	
 	
-	
+	public void updateVse() {
+		updateGrupe();
+		updateNullGrupe();
+		updateUjete();
+	}
 	
 	
 	
@@ -495,6 +565,70 @@ public static int velikost = 9;
 		return colorSet;
 	}
 	
+	
+	public boolean obkoljuje(List<Koordinate> grupa) { // moja definicija da grupa "obkoljuje območje": če 
+		Zeton barva = barvaGrupe(grupa);
+		Igra copyIgra = new Igra(this);
+		for (Koordinate koord : grupa) {
+			
+			int stNullGrupPrej = 0;
+			
+			copyIgra.grid.dodajZetonKoord(null, koord); //odstranimo žeton in pogledamo kaj se zgodi s št null grup in ga damo nazaj, če se št null grup poveča pri vsaj enem potem obkoljuje
+			copyIgra.updateNullGrupe();
+			
+			
+			
+			copyIgra.grid.dodajZetonKoord(barva, koord);
+			
+			
+		}
+	}
+	
+	public List<List<Koordinate>> sosednjeNullGrupe(List<Koordinate> grupa){
+		List<List<Koordinate>> sosednje = new ArrayList<List<Koordinate>>();
+		for (List<Koordinate> ngrup : nullGrupe) {
+			if (staSosednjiGrupi(ngrup, grupa)) sosednje.add(ngrup);
+		}
+		return sosednje;
+	}
+	
+	
+	public boolean lahkoImaDveUcki(List<Koordinate> grupa) {
+		// 1.
+		if (libertiesGrupa(grupa).size() < 2) return false;
+		
+		// 2. 
+		List<List<Koordinate>> sosednje = sosednjeNullGrupe(grupa);
+		List<Koordinate> praznoOkoli = new ArrayList<Koordinate>();
+		int maxVelikost = 0;
+		for (List<Koordinate> sosednja : sosednje) {
+			int velikost = sosednja.size();
+			if (velikost > maxVelikost) maxVelikost = velikost;
+			praznoOkoli.addAll(sosednja);
+		}
+		if (maxVelikost < 2) return false;
+		
+		// 3. 
+		if (maxVelikost > 10) return true; //to ni nujno res ampak je poenostavitev, ker čene preveč časovno zahtevno, pokrije večino primerov
+		
+		// 5. v najslabšem primeru pogledamo vse možnosti
+		
+		
+		for (List<Koordinate> zaporedje : permute(praznoOkoli)) {
+			Igra copyIgra = new Igra(this);
+			List<Koordinate> razširjenaGrupa = grupa;
+			for(Koordinate koord : zaporedje) {
+				copyIgra.odigraj(koord.getPoteza());
+				razširjenaGrupa.add(koord);
+				if (imaDveUcki(razširjenaGrupa)) {
+					return true;
+				}
+			}	
+		}
+		return false;
+		
+	}
+	
 	public void updateNullGrupe() {
 	    nullGrupe = new ArrayList<>();
 	    Set<HashSet<Koordinate>> nullSet = new HashSet<>();
@@ -525,6 +659,19 @@ public static int velikost = 9;
 		
 	}
 
+	public void odstraniHopelessGroups() {
+		for (List<Koordinate> grupa : beleGrupe) {
+			if (!lahkoImaDveUcki(grupa)) {
+				odstraniGrupo(grupa);
+			}
+		}
+		for (List<Koordinate> grupa : crneGrupe) {
+			if (!lahkoImaDveUcki(grupa)) {
+				odstraniGrupo(grupa);
+			}
+		}
+	}
+
 	public int vrednostPozicije(Igralec igralec) { //vrednost pozicije je dejanski score count, ni enako kot ocena pozicije ki upošteva še ugodnost postavitve in ostalo
 		int vrednost = 0;
 		
@@ -545,15 +692,23 @@ public static int velikost = 9;
 		return vrednost;
 	}
 	
+	
+	
+
 	public void updateStanje() {
+		
+		//1. igra se konča
 		if (zadnjaPoteza != null && predzadnjaPoteza != null && zadnjaPoteza.pass() && predzadnjaPoteza.pass() || prostaMesta().isEmpty()) {
+			
+			odstraniHopelessGroups();
+			
 			int beli = vrednostPozicije(Igralec.WHITE);
 			int crni = vrednostPozicije(Igralec.BLACK);
 			
 			if (beli > crni) stanje = Stanje.win_white;
 			else if (beli < crni) stanje = Stanje.win_black;
 			else if (beli == crni) stanje = Stanje.draw;
-		} else {
+		} else { //2. igra se nekonča
 			stanje = Stanje.in_progress;
 		}
 		
@@ -674,6 +829,24 @@ public static int velikost = 9;
 		return (igralec == Igralec.WHITE ? ujeteBele : ujeteCrne);
 	}
 	
+	public static void permute(List<Koordinate> array, int i, List<List<Koordinate>> perms) {
+        if (i == array.size() - 1) {
+            perms.add(new ArrayList<>(array));
+        } else {
+            for (int j = i; j < array.size(); j++) {
+                Collections.swap(array, i, j);
+                permute(array, i + 1, perms);
+                Collections.swap(array, i, j);
+            }
+        }
+    }
+
+    public static List<List<Koordinate>> permute(List<Koordinate> array) {
+        List<List<Koordinate>> perms = new ArrayList<>();
+        permute(array, 0, perms);
+        return perms;
+    }
+	
 	
 	public void printInfo() {
 	    System.out.println("----- Information -----");
@@ -702,7 +875,7 @@ public static int velikost = 9;
 	    
 	    System.out.println("Bele Grupe:");
 	    for (List<Koordinate> list : beleGrupe) {
-	        System.out.println(list);
+	        System.out.println("potential two eyes: "+ lahkoImaDveUcki(list) + ", Koord: "+ list);
 	    }
 	    
 	    System.out.println("Crne Grupe:");
@@ -728,6 +901,12 @@ public static int velikost = 9;
 	        System.out.println(list);
 	    }
 	    
+	    System.out.println("Zascitene:");
+	    for (List<Koordinate> list : zascitene) {
+	        System.out.println(list);
+	    }
+	    
+	    
 	    System.out.println("Number of captured Belih: " + stUjetihBelihZetonov);
 	    System.out.println("Number of captured Crnih: " + stUjetihCrnihZetonov);
 	    System.out.println("Number of Belih on board: " + stBelihNaPlosci);
@@ -735,6 +914,12 @@ public static int velikost = 9;
 	    System.out.println("Stanje: " + stanje);
 	    System.out.println("Predzadnja: " + predzadnjaPoteza);
 	    System.out.println("Zadnja: " + zadnjaPoteza);
+	    
+	    for (List<Koordinate> list : beleGrupe) {
+	        if (imaDveUcki(list)) System.out.println(list + " ima dve ucki");
+	    }
+	    
+	    
 	    System.out.println("-----------------------");
 	}
 

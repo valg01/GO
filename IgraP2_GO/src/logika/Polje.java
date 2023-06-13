@@ -26,6 +26,13 @@ public class Polje { //polje je mreža
 		return mreza[x][y];
 	}
 	
+	public Zeton naMestuKoord(Koordinate koord) {
+		int x = koord.getX();
+		int y = koord.getY();
+		
+		return mreza[x][y];
+	}
+	
 	public void dodajZeton(Zeton zeton, int x, int y) {
 		mreza[x][y] = zeton;
 	}

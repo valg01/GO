@@ -1,5 +1,9 @@
 package logika;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Objects;
+
+import splosno.Poteza;
 
 
 public class Koordinate {
@@ -35,6 +39,20 @@ public class Koordinate {
         return new Koordinate(x, y+1);
     }
     
+    public List<Koordinate> sosedi() {
+        List<Koordinate> sosedje = new ArrayList<>();
+        sosedje.add(desna());
+        sosedje.add(leva());
+        sosedje.add(zgornja());
+        sosedje.add(spodnja());
+        return sosedje;
+    }
+    
+    public Poteza getPoteza() {
+    	
+    	return new Poteza(this.x, this.y, false);
+    }
+
 
     @Override
     public String toString() {
