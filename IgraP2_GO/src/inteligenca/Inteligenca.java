@@ -5,6 +5,7 @@ import java.util.List;
 import logika.Igra;
 import logika.Igralec;
 import logika.Koordinate;
+import logika.Stanje;
 import splosno.KdoIgra;
 import splosno.Poteza;
 
@@ -102,23 +103,39 @@ public class Inteligenca extends KdoIgra {
 		
 		
 		
-		
-		List<Koordinate> moznePoteze = igra.prostaMesta(); 
+		//List<Koordinate> moznePoteze = igra.prostaMesta(); 
 		List<Koordinate> verjetne = igra.najboljVerjetne(); //množica mest ki imajo zasedeno polje za soseda
-		//Koordinate kandidat = moznePoteze.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
+		if (verjetne.size() == 0) {
+			System.out.print("prazna");
+			verjetne = igra.najboljVerjetne();
+		}
+		
+		if (igra.prostaMesta().size() < 81 * 0.4 || igra.stUjetihBelihZetonov + igra.stUjetihCrnihZetonov > 20) {
+			Igra copyIgra = new Igra(igra);
+			Poteza p = new Poteza(-1,-1,true);
+			copyIgra.odigraj(p);
+			copyIgra.odigraj(p);
+			if (copyIgra.stanje == Stanje.win_white && igralec == Igralec.WHITE || copyIgra.stanje == Stanje.win_black && igralec == Igralec.BLACK) {
+				
+				return new OcenjenaPoteza(p, 1000);
+			}
+		}
+		
+		System.out.print(verjetne);
+		Koordinate kandidat = verjetne.get(0); // Možno je, da se ne spremini vrednost kanditata. Zato ne more biti null.
 		
 		
 		for (Koordinate k: verjetne) {
 			if (igra.stevec < 1000) {
 				if (true){ //verjetne.contains(k))     (k.getX() >= 2  && k.getX() <= 5 && k.getY() >= 2  && k.getY() <= 5) {
-					Igra kopija = new Igra();
-					kopija.igralecNaPotezi = igra.igralecNaPotezi;
-					for (int i=0; i < Igra.velikost; i++) {
-						for (int j=0; j < Igra.velikost; j++) {
-							kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
-						}
-					}
-					kopija.stevec = igra.stevec;
+					Igra kopija = new Igra(igra); //kopija s konstruktorjem za kopujo
+					//kopija.igralecNaPotezi = igra.igralecNaPotezi;
+					//for (int i=0; i < Igra.velikost; i++) {
+					//	for (int j=0; j < Igra.velikost; j++) {
+					//		kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
+					//	}
+					//}
+					//kopija.stevec = igra.stevec;
 					Poteza p = new Poteza(k.getX(), k.getY());
 					kopija.odigraj(p);
 					int ocenap;
@@ -148,14 +165,15 @@ public class Inteligenca extends KdoIgra {
 				}
 
 			}
-			Igra kopija = new Igra();
-			kopija.igralecNaPotezi = igra.igralecNaPotezi;
-			for (int i=0; i < Igra.velikost; i++) {
-				for (int j=0; j < Igra.velikost; j++) {
-					kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
-				}
-			}
-			kopija.stevec = igra.stevec;
+			Igra kopija = new Igra(igra);
+			//kopija.igralecNaPotezi = igra.igralecNaPotezi;
+			//for (int i=0; i < Igra.velikost; i++) {
+			//	for (int j=0; j < Igra.velikost; j++) {
+			//		kopija.grid.mreza[i][j] = igra.grid.mreza[i][j];
+			//	}
+			//}
+			//kopija.stevec = igra.stevec;
+			
 			Poteza p = new Poteza(k.getX(), k.getY());
 			kopija.odigraj(p);
 			int ocenap;
@@ -184,7 +202,7 @@ public class Inteligenca extends KdoIgra {
 				break;
 		}
 		Poteza p = new Poteza(kandidat.getX(), kandidat.getY());
-		igra.stevec++;
+		//igra.stevec++;
 		return new OcenjenaPoteza (p, ocena);
 	}
 
@@ -285,9 +303,9 @@ public class Inteligenca extends KdoIgra {
 		int globina;
 		System.out.print(igra.najboljVerjetne().size());
 		if (igra.najboljVerjetne().size() > 10) {
-		    globina = 3;
+		    globina = 2;
 		}
-		else globina = 4;
+		else globina = 3;
 		
 		OcenjenaPoteza najboljsaPoteza = alphabeta(igra, globina,PORAZ,ZMAGA,igra.naPotezi());
 

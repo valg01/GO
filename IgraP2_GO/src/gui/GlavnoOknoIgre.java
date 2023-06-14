@@ -8,6 +8,7 @@ import java.util.EnumMap;
 
 import javax.swing.*;
 
+import logika.Igra;
 import logika.Igralec;
 import vodja.Vodja;
 import vodja.VrstaIgralca;
@@ -153,12 +154,18 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
         undoButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
-                splosno.Poteza passMove = new splosno.Poteza(-1, -1, true);
+            	
+            	
+            	if (!Vodja.igra.gameHistory.isEmpty()) {
+                    // restore the state to the previous one
+                    Igra previousState = Vodja.igra.gameHistory.pop();
+                    Vodja.igra = previousState;
+                    Vodja.igramo();
+                    osveziGUI();
+            	}
                
-                Vodja.igra = Vodja.igra.igraPredZadnjoPotezo;
-                Vodja.igramo();
-                osveziGUI();
+                
+                
             }
         });
 

@@ -22,8 +22,8 @@ public class OceniPozicijo {
 		int stCrnih = igra.stCrnihNaPlosci;
 		
 		//st ujetih zetonov
-		
-		
+		int stUjetihBelih = igra.stUjetihBelihZetonov;
+		int stUjetihCrnih = igra.stUjetihCrnihZetonov;
 		
 		//liberties count
 		int libertiesCrni = igra.stLibertiesIgralec(igralec.BLACK);
@@ -91,6 +91,26 @@ public class OceniPozicijo {
 		else if (igralec == Igralec.BLACK && steviloCrnihNaRobu < steviloBelihNaRobu ||igralec == Igralec.WHITE && steviloBelihNaRobu < steviloCrnihNaRobu) {
 			ocena -= Math.abs(steviloCrnihNaRobu - steviloBelihNaRobu) * 1;
 		}
+		
+		
+		
+		if (igralec == Igralec.BLACK && stCrnih > stBelih ||igralec == Igralec.WHITE && stBelih > stCrnih) { //ce je najvecja grupa vecja od najvecje grupe nasprotnika je ugodno
+			ocena += Math.abs(stBelih - stCrnih) * 10;
+		}
+		else if (igralec == Igralec.BLACK && stCrnih < stBelih ||igralec == Igralec.WHITE && stBelih < stCrnih) {
+			ocena -= Math.abs(stBelih - stCrnih) * 10;
+		}
+		
+		if (igralec == Igralec.BLACK && stUjetihCrnih < stUjetihBelih || igralec == Igralec.WHITE && stUjetihBelih < stUjetihCrnih) { //ce je najvecja grupa vecja od najvecje grupe nasprotnika je ugodno
+		    ocena += Math.abs(stUjetihBelih - stUjetihCrnih) * 10;
+		}
+		else if (igralec == Igralec.BLACK && stUjetihCrnih > stUjetihBelih || igralec == Igralec.WHITE && stUjetihBelih > stUjetihCrnih) {
+		    ocena -= Math.abs(stUjetihBelih - stUjetihCrnih) * 10;
+		}
+
+		
+		
+		
 		return ocena;
 		
 	}
