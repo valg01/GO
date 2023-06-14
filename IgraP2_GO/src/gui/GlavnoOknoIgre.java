@@ -33,6 +33,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	private JLabel status;
 	
 	private JButton passButton;
+	private JButton undoButton; 
 
 	
 	public GlavnoOknoIgre() {
@@ -140,8 +141,28 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 
         getContentPane().add(passButton, BorderLayout.SOUTH);
 		
+        
+        
+        
+        
+        
+        
 
-	
+        undoButton = new JButton("Undo");
+        
+        undoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                splosno.Poteza passMove = new splosno.Poteza(-1, -1, true);
+               
+                Vodja.igra = Vodja.igra.igraPredZadnjoPotezo;
+                Vodja.igramo();
+                osveziGUI();
+            }
+        });
+
+        getContentPane().add(undoButton, BorderLayout.EAST);
 		
 		
 
