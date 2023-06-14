@@ -230,11 +230,12 @@ public static int velikost = 9;
 			}
 		}
 		
-		updateGrupe();
+		//updateGrupe();
 		updateNullGrupe(); //to bo nakoncu sam ob koncu igre
 		updateUjeteBrezOdstranjevanja(p.getKoordinate());
+		updateGrupe();
 		updateLiberties();
-		//updateStanje();
+		//updateStanje(); //stanje odstranjuje grupe kar tu nočemo, zato ga zakomentiramo
 		stevec++;
 		
 		printInfo();
@@ -1022,7 +1023,7 @@ public static int velikost = 9;
 	    
 	    for (List<Koordinate> list : nullGrupe) {
 	        System.out.print(list.size());
-	       // System.out.println(", " + lastnikNullGrupe(list));
+	        System.out.println(", " + lastnikNullGrupe(list));
 	    }
 	    
 	    System.out.println("Ujete Bele:");
