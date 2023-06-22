@@ -178,7 +178,12 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
         });
 
         getContentPane().add(undoButton, BorderLayout.EAST);
-		
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        buttonPanel.add(passButton);
+        buttonPanel.add(undoButton);
+
+        this.add(buttonPanel, BorderLayout.SOUTH);
 		
 
 	}
