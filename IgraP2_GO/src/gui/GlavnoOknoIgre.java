@@ -26,8 +26,10 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	private JMenuItem igraRacunalnikClovek;
 		
 	private JMenuItem menuOdpri, menuShrani, menuZapri;
-	private JMenuItem VelikostMreze;
+
 	private JMenuItem barvaPlosce, barvaRoba;
+	
+	private JMenuItem devet, trinajst, devetnajst;
 	
 	private static JLabel winMessageLabel;
 	
@@ -83,6 +85,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		JMenu menuDatoteka = dodajMenu(menu_bar, "Datoteka");
 		JMenu menuNovaIgra = dodajMenu(menu_bar, "Igra");
 		JMenu menuNastavitve = dodajMenu(menu_bar, "Nastavitve");
+		JMenu VelikostMreze = dodajMenu(menu_bar, "Velikost mreže");
 		
 		menuOdpri = dodajMenuItem(menuDatoteka, "Odpri ...");
 		menuShrani = dodajMenuItem(menuDatoteka, "Shrani ...");
@@ -94,9 +97,14 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		igraRacunalnikClovek = dodajMenuItem(menuNovaIgra,"Računalnik – Človek");
 		igraRacunalnikRacunalnik = dodajMenuItem(menuNovaIgra, "Računalnik – Računalnik");
 		
-		VelikostMreze = dodajMenuItem(menuNastavitve, "Velikost mreže");
-		barvaPlosce = dodajMenuItem(menuNastavitve, "Barva plošče");
+
+		barvaPlosce = dodajMenuItem(menuNastavitve, "Barva Plošče");
 		barvaRoba = dodajMenuItem(menuNastavitve, "Barva Roba");
+		
+        devet = dodajMenuItem(VelikostMreze, "9x9");
+        trinajst = dodajMenuItem(VelikostMreze, "13x13");
+        devetnajst = dodajMenuItem(VelikostMreze, "19x19");
+        
 		
 		status = new JLabel();
 		status.setFont(new Font(status.getFont().getName(),
@@ -200,7 +208,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			JFileChooser dialog = new JFileChooser();
 			int izbira = dialog.showOpenDialog(this);
 			if (izbira == JFileChooser.APPROVE_OPTION) {
-				String ime = dialog.getSelectedFile().getPath();
+				dialog.getSelectedFile().getPath();
 
 			}
 		}
@@ -208,13 +216,13 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			JFileChooser dialog = new JFileChooser();
 			int izbira = dialog.showSaveDialog(this);
 			if (izbira == JFileChooser.APPROVE_OPTION) {
-				String ime = dialog.getSelectedFile().getPath();
-				//polje.graf.shrani(ime);
+				dialog.getSelectedFile().getPath();
 			}
 		}
 		else if (objekt == menuZapri) {
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			}
+		
 		else if(objekt == igraClovekRacunalnik) {
 			Vodja.vrstaIgralca = new EnumMap<Igralec,VrstaIgralca>(Igralec.class);
 			Vodja.vrstaIgralca.put(Igralec.BLACK, VrstaIgralca.C); 
@@ -241,12 +249,32 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			Vodja.vrstaIgralca.put(Igralec.WHITE, VrstaIgralca.R);
 			Vodja.igramoNovoIgro();
 			
+		} else if (objekt == devet) {
+			Igra.velikost = 9;
+			repaint();
+		} else if (objekt == trinajst) {
+			Igra.velikost = 13;
+			repaint();
+		}  else if (objekt == devetnajst) {
+			Igra.velikost = 19;
+			repaint();
+		} else if (objekt == barvaRoba) {
+			Color barva = JColorChooser.showDialog(this, "Izberi barvo mreze", mreza.barvaRoba);
+			if (barva != null) {
+				mreza.barvaRoba = barva;
+				repaint();
+			}
+		}else if (objekt == barvaPlosce) {
+			Color barva = JColorChooser.showDialog(this, "Izberi barvo plošče", mreza.barvaMreze);
+			if (barva != null) {
+				mreza.barvaMreze = barva;
+				repaint();
+			}
 		}
 		
-		
 		repaint();
-		
 	}
+	
 	public void osveziGUI() {
 		if (Vodja.igra == null) status.setText("Izberi igro");
 		else {

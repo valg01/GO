@@ -1,7 +1,6 @@
 package logika;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -10,11 +9,10 @@ import java.util.Set;
 import java.util.Stack;
 
 import splosno.Poteza;
-import vodja.Vodja;
 
 public class Igra {
 	
-public static int velikost = 9;
+public static int velikost = 19;
     
 	public Igra igraPredZadnjoPotezo;
     public int stevec;
@@ -119,7 +117,7 @@ public static int velikost = 9;
 		LinkedList<Koordinate> ps = new LinkedList<Koordinate>();
 		for (int i = 0; i < velikost; i++) {
 			for (int j = 0; j < velikost; j++) {
-				if (grid.mreza[i][j] == null) {
+				if (grid.mreza[i][j] == null && jeVeljavna(new Poteza(i,j))) {
 					ps.add(new Koordinate(i, j));
 				}
 			}
@@ -323,7 +321,7 @@ public static int velikost = 9;
 	    copyIgra.OdigrajVKopiji(p);
 
 	    int stUjetihPotem = copyIgra.getUjete(igralec).size();
-	    List<List<Koordinate>> ujetePotemNasprotnik = copyIgra.getUjete(igralec.nasprotnik());
+	    copyIgra.getUjete(igralec.nasprotnik());
 	    int stUjetihPotemNasprotnik = copyIgra.getUjete(igralec.nasprotnik()).size();
 
 	    //System.out.println("Number of captured before move for current player: " + stUjetihPrej);
@@ -590,23 +588,6 @@ public static int velikost = 9;
 	}
 	
 	
-	public boolean obkoljuje(List<Koordinate> grupa) { // moja definicija da grupa "obkoljuje območje": če 
-		Zeton barva = barvaGrupe(grupa);
-		Igra copyIgra = new Igra(this);
-		for (Koordinate koord : grupa) {
-			
-			int stNullGrupPrej = 0;
-			
-			copyIgra.grid.dodajZetonKoord(null, koord); //odstranimo žeton in pogledamo kaj se zgodi s št null grup in ga damo nazaj, če se št null grup poveča pri vsaj enem potem obkoljuje
-			copyIgra.updateNullGrupe();
-			
-			
-			
-			copyIgra.grid.dodajZetonKoord(barva, koord);
-			
-			
-		}
-	}
 	
 	public List<List<Koordinate>> sosednjeNullGrupe(List<Koordinate> grupa){
 		List<List<Koordinate>> sosednje = new ArrayList<List<Koordinate>>();
@@ -643,15 +624,15 @@ public static int velikost = 9;
 		
 	}
 	
-	public boolean jeObkoljenaZNasprotnikom2(List<Koordinate> grupa) {
-		Igralec igralec = barvaGrupe(grupa).getIgralec();
-		for (List<Koordinate> grupa : sosednjeNullGrupe(grupa)) {
-			if (lastnikNullGrupe(grupa) != igralec) {
-				
-			}
-		}
-		
-	}
+	//public boolean jeObkoljenaZNasprotnikom2(List<Koordinate> grupa) {
+	//	Igralec igralec = barvaGrupe(grupa).getIgralec();
+	//	for (List<Koordinate> grupa : sosednjeNullGrupe(grupa)) {
+	//		if (lastnikNullGrupe(grupa) != igralec) {
+	//			
+	//		}
+	//	}
+	//	
+	//}
 	
 	public boolean jeObkoljenaZNasprotnikom3(List<Koordinate> grupa) {
 		Igralec igralec = barvaGrupe(grupa).getIgralec();
@@ -726,23 +707,15 @@ public static int velikost = 9;
 		
 	}
 	
-	public List<List<Koordinate>> vseGrupeVIstemObmocju(List<Koordinate> grupa){
+	//public List<List<Koordinate>> vseGrupeVIstemObmocju(List<Koordinate> grupa){
 		
-	}
+	//}
 	
  	public boolean lahkoImaDveUcki(List<Koordinate> grupa) {
 		// 1.
 		if (libertiesGrupa(grupa).size() < 2) return false;
 		
-		// 2. 
-		List<List<Koordinate>> sosednje = sosednjeNullGrupe(grupa);
-		//List<Koordinate> praznoOkoli = new ArrayList<Koordinate>();
-		//int maxVelikost = 0;
-		//for (List<Koordinate> sosednja : sosednje) {
-		//	int velikost = sosednja.size();
-		//	if (velikost > maxVelikost) maxVelikost = velikost;
-		//	praznoOkoli.addAll(sosednja);
-		//}
+		sosednjeNullGrupe(grupa);
 		
 		if (praznoOkoli(grupa).size() > 10) return true;
 		//if (maxVelikost < 2) return false;
@@ -814,7 +787,7 @@ public static int velikost = 9;
 		}	
 		
 		//koliko ima žetonov
-		if (igralec == igralec.WHITE) {
+		if (igralec == Igralec.WHITE) {
 			vrednost += stBelihNaPlosci;
 		} else {
 			vrednost += stCrnihNaPlosci;
@@ -927,6 +900,7 @@ public static int velikost = 9;
 		odigraj(p);
 	}
 	
+	@SuppressWarnings("unlikely-arg-type")
 	public List<Koordinate> najboljVerjetne(){
 		ArrayList<Koordinate> merge = new ArrayList<Koordinate>();
 		merge.addAll(libertiesBeli);

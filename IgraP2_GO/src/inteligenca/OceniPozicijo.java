@@ -1,11 +1,10 @@
 package inteligenca;
 
 import java.util.List;
-import java.util.ArrayList;
-
 import logika.Igra;
 import logika.Igralec;
 import logika.Koordinate;
+import logika.Stanje;
 import logika.Zeton;
 
 public class OceniPozicijo {
@@ -26,8 +25,8 @@ public class OceniPozicijo {
 		int stUjetihCrnih = igra.stUjetihCrnihZetonov;
 		
 		//liberties count
-		int libertiesCrni = igra.stLibertiesIgralec(igralec.BLACK);
-		int libertiesBeli = igra.stLibertiesIgralec(igralec.WHITE);
+		int libertiesCrni = igra.stLibertiesIgralec(Igralec.BLACK);
+		int libertiesBeli = igra.stLibertiesIgralec(Igralec.WHITE);
 		
 		
 		
@@ -73,12 +72,8 @@ public class OceniPozicijo {
 			if (igra.grid.mreza[7][j] == Zeton.BLACK) steviloCrnihNaRobu++;
 			else if(igra.grid.mreza[7][j] == Zeton.WHITE) steviloBelihNaRobu++; 
 		}
-		if (igralec == Igralec.BLACK && najvecjaGrupaCrni > najvecjaGrupaBeli ||igralec == Igralec.WHITE && najvecjaGrupaBeli > najvecjaGrupaCrni) { //ce je najvecja grupa vecja od najvecje grupe nasprotnika je ugodno
-			ocena += Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 2;
-		}
-		else if (igralec == Igralec.BLACK && najvecjaGrupaCrni < najvecjaGrupaBeli ||igralec == Igralec.WHITE && najvecjaGrupaBeli < najvecjaGrupaCrni) {
-			ocena -= Math.abs(najvecjaGrupaBeli - najvecjaGrupaCrni) * 2;
-		}
+
+		
 		if (igralec == Igralec.BLACK && libertiesCrni > libertiesBeli ||igralec == Igralec.WHITE && libertiesBeli > libertiesCrni) { //če ima manj liberties kot nasportnik je ugodna poteza
 			ocena += Math.abs(libertiesBeli - libertiesCrni) * 6;
 		}
@@ -117,7 +112,6 @@ public class OceniPozicijo {
 
 	
 	public static int oceniPozicijoStar(Igra igra, Igralec igralec){
-		Igralec naPotezi = igra.igralecNaPotezi;
 		if (igralec == Igralec.BLACK) {
 			//if (igra.stanje == igra.stanje.win_black) return 1000;
 			//if (igra.stanje == igra.stanje.win_white) return -1000;
@@ -136,8 +130,8 @@ public class OceniPozicijo {
 			
 		}
 		if (igralec == Igralec.WHITE) {
-			if (igra.stanje == igra.stanje.win_white) return 1000;
-			if (igra.stanje == igra.stanje.win_black) return -1000;
+			if (igra.stanje == Stanje.win_white) return 1000;
+			if (igra.stanje == Stanje.win_black) return -1000;
 			
 			if (igra.igralecNaPotezi == Igralec.WHITE) {
 				if (igra.ogrozeneBele == null && igra.ogrozeneCrne != null) return 1000;
@@ -159,11 +153,11 @@ public class OceniPozicijo {
 
 		int ocena = 0;
 		int najvecjaGrupaCrni = 0;
-		int libertiesCrni = igra.stLibertiesIgralec(igralec.BLACK);
+		int libertiesCrni = igra.stLibertiesIgralec(Igralec.BLACK);
 		//System.out.println();
 		//System.out.println(libertiesCrni);
 		//System.out.println();
-		int libertiesBeli = igra.stLibertiesIgralec(igralec.WHITE);
+		int libertiesBeli = igra.stLibertiesIgralec(Igralec.WHITE);
 		int najvecjaGrupaBeli = 0;
 		if (igra.crneGrupe != null) {
 			for (List<Koordinate> grupa : igra.crneGrupe) {

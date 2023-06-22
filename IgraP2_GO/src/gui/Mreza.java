@@ -11,15 +11,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JPanel;
 
 import logika.Graf;
 import logika.Igra;
-import logika.Igralec;
-import logika.Koordinate;
 import logika.Polje;
 import logika.Zeton;
 import splosno.Poteza;
@@ -55,13 +50,11 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	
  //dodana igra izven konstruktorja
 	
-	protected double polmer;
-	
+	double polmer;
+		
 
-	
-	public int velikost = Igra.velikost;
 	public Polje mreza;
-	
+	int velikost = Igra.velikost;
 	int presecisceSirina = getWidth() / velikost;
 	int presecisceVisina = getHeight() / velikost;
 	
@@ -78,9 +71,6 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		barvaDrugega = Color.WHITE;
 		barvaMreze = new Color(193, 154, 107);
 		barvaRoba = Color.BLACK;
-		
-		polmer = 20;
-		
 		
 		setPreferredSize(new Dimension(sirina, visina));
 		setBackground(barvaMreze);
@@ -103,6 +93,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 	
 	
 	private double Kvadratek() {
+		int velikost = Igra.velikost;
 		return Math.min(getWidth(), getHeight()) / (velikost + 4);
 	}
 	
@@ -111,6 +102,8 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		super.paintComponent(g);
 		Graphics2D g2 = (Graphics2D) g;
 		double sirina = Kvadratek();
+		polmer =  sirina / 2.5;
+		int velikost = Igra.velikost;
 		
 		if(Vodja.igra == null) return;
 		
@@ -119,10 +112,33 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		for (int i = 1; i < velikost + 1 ; i++) {
 			g2.drawLine((int)((i) * sirina),(int)(sirina),
 					(int)((i) * sirina), (int)((velikost) * sirina));
-			g2.drawLine((int)(1 * sirina), (int)(i * sirina),
-				   (int)((velikost) * sirina), (int)(i * sirina));
+			g2.drawLine((int)(1 * sirina) , (int)(i * sirina),
+				   (int)((velikost) * sirina ), (int)(i * sirina));
 			
 		}
+		
+		if (velikost == 9) {
+			g2.fillOval(round((3 * sirina) - 10), round((3 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((7 * sirina) - 10), round((3 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((3 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((7 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((5 * sirina) - 10), round((5 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+		}
+		
+		else if (velikost == 13) {
+			g2.fillOval(round((4 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((10 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((4 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((10 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((7 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+		}
+		else if (velikost == 19) {
+			g2.fillOval(round((4 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((16 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((4 * sirina) - 10), round((16 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((16 * sirina) - 10), round((16 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((10 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+		} 
 		
 		for (int i = 0; i < velikost; i++) {
 			for (int j = 0; j < velikost; j++) {
@@ -150,8 +166,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				
 
 			}
-		}
-		
+		}		
 		
 	}
 	
@@ -217,16 +232,17 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
+		int velikost = Igra.velikost;
 		
 		double najblizja = polmer + 10;
 		int x = e.getX();
 		int y = e.getY();
-		int najblizjiX = 0;
-		int najblizjiY = 0;
+		int najblizjiX = -100;
+		int najblizjiY = -100;
 		double sirina = Kvadratek();
 		for (int i = 1; i < velikost +4 ;i ++) {
 			for (int j = 1; j < velikost + 4; j++) {
-				double razdalja = Math.sqrt((x - i * sirina ) * (x - i * sirina ) + (y - j * sirina ) * (y - j* sirina));
+				double razdalja = Math.sqrt((x - i * sirina ) * (x - i * sirina ) + (y  - j * sirina ) * (y  - j* sirina));
 				if (razdalja < najblizja) {
 					najblizjiX = i-1;
 					najblizjiY = j-1;			
@@ -237,8 +253,11 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		
 		
 		//System.out.print(Vodja.igra.stanje);
-		Poteza p = new Poteza(najblizjiX, najblizjiY);
-		Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		if (najblizjiX < 0 || najblizjiY < 0) return;
+		else {
+			Poteza p = new Poteza(najblizjiX, najblizjiY);
+			Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		}
 		
 		Vodja.igramo();
 		
