@@ -122,26 +122,26 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		}
 		
 		if (velikost == 9) {
-			g2.fillOval(round((3 * sirina) - 10), round((3 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((7 * sirina) - 10), round((3 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((3 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((7 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((5 * sirina) - 10), round((5 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((3 * sirina) - 7), round((3 * sirina) - 10),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((7 * sirina) - 7), round((3 * sirina) - 10),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((3 * sirina) - 7), round((7 * sirina) - 10),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((7 * sirina) - 7), round((7 * sirina) - 10),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((5 * sirina) - 7), round((5 * sirina) - 10),(int) (2* 7),(int) (2 * 7));
 		}
 		
 		else if (velikost == 13) {
-			g2.fillOval(round((4 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((10 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((4 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((10 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((7 * sirina) - 10), round((7 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((4 * sirina) - 7), round((4 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((10 * sirina) - 7), round((4 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((4 * sirina) - 7), round((10 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((10 * sirina) - 7), round((10 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((7 * sirina) - 7), round((7 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
 		}
 		else if (velikost == 19) {
-			g2.fillOval(round((4 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((16 * sirina) - 10), round((4 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((4 * sirina) - 10), round((16 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((16 * sirina) - 10), round((16 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
-			g2.fillOval(round((10 * sirina) - 10), round((10 * sirina) - 10),(int) (2* 10),(int) (2 * 10));
+			g2.fillOval(round((4 * sirina) - 7), round((4 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((16 * sirina) - 7), round((4 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((4 * sirina) - 7), round((16 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((16 * sirina) - 7), round((16 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
+			g2.fillOval(round((10 * sirina) - 7), round((10 * sirina) - 7),(int) (2* 7),(int) (2 * 7));
 		} 
 		
 		for (int i = 0; i < velikost; i++) {
@@ -151,10 +151,12 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 				if (Vodja.igra.grid.mreza[i][j] == Zeton.BLACK) {
 					g2.setColor(barvaPrvega);
 					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
+					//playSound("src/click2.wav");
 				}
 				else if (Vodja.igra.grid.mreza[i][j] == Zeton.WHITE) {
 					g2.setColor(barvaDrugega);
-					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));		
+					g2.fillOval(round(x - polmer), round(y - polmer),(int) (2* polmer),(int) (2 * polmer));
+					//playSound("src/click2.wav");
 				}
 				//if (Vodja.igra.ujetaGrupa != null) {
 				//	g2.setColor(Color.RED);
@@ -270,10 +272,14 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		if (najblizjiX < 0 || najblizjiY < 0) return;
 		else {
 			Poteza p = new Poteza(najblizjiX, najblizjiY);
-			playSound("src/click2.wav");
-			Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
-		}
-		
+			if(Vodja.igra.odigraj(p)) {
+				Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+				playSound("src/click2.wav");
+			}
+		//	Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
+		//	playSound("src/click2.wav");
+		//	if (Vodja.igra.grid.mreza[najblizjiX][najblizjiY] == null) playSound("src/click2.wav");
+		}		
 		Vodja.igramo();
 		
 		
