@@ -11,6 +11,10 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
+
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.JPanel;
 
 import logika.Graf;
@@ -189,6 +193,16 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		double s = Kvadratek();
 		double odmikDesno = getWidth()
 	}*/
+	private void playSound(String soundFilePath) {
+        try {
+            File soundFile = new File(soundFilePath);
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(soundFile));
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 	private int round(double d) {
 		return (int) (d + 0.5) ;
@@ -256,6 +270,7 @@ public class Mreza extends JPanel implements MouseListener, MouseMotionListener,
 		if (najblizjiX < 0 || najblizjiY < 0) return;
 		else {
 			Poteza p = new Poteza(najblizjiX, najblizjiY);
+			playSound("src/click2.wav");
 			Vodja.igra.odigraj(p); //odigraj je logična ne grafična zadeva, vse zdej tu notr
 		}
 		

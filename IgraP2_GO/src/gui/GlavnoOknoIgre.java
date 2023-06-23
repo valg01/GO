@@ -25,9 +25,9 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	private JMenuItem igraRacunalnikRacunalnik;
 	private JMenuItem igraRacunalnikClovek;
 		
-	private JMenuItem menuOdpri, menuShrani, menuZapri;
+	private JMenuItem menuZapri;
 
-	private JMenuItem barvaPlosce, barvaRoba;
+	private JMenuItem barvaRoba;
 	
 	private JMenuItem devet, trinajst, devetnajst;
 	
@@ -87,9 +87,6 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		JMenu menuNastavitve = dodajMenu(menu_bar, "Nastavitve");
 		JMenu VelikostMreze = dodajMenu(menu_bar, "Velikost mreže");
 		
-		menuOdpri = dodajMenuItem(menuDatoteka, "Odpri ...");
-		menuShrani = dodajMenuItem(menuDatoteka, "Shrani ...");
-		menuDatoteka.addSeparator();
 		menuZapri = dodajMenuItem(menuDatoteka, "Zapri");
 		
 		igraClovekClovek = dodajMenuItem(menuNovaIgra, "Človek – človek");
@@ -97,8 +94,6 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 		igraRacunalnikClovek = dodajMenuItem(menuNovaIgra,"Računalnik – Človek");
 		igraRacunalnikRacunalnik = dodajMenuItem(menuNovaIgra, "Računalnik – Računalnik");
 		
-
-		barvaPlosce = dodajMenuItem(menuNastavitve, "Barva Plošče");
 		barvaRoba = dodajMenuItem(menuNastavitve, "Barva Roba");
 		
         devet = dodajMenuItem(VelikostMreze, "9x9");
@@ -209,22 +204,7 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object objekt = e.getSource();
-		if (objekt == menuOdpri) {
-			JFileChooser dialog = new JFileChooser();
-			int izbira = dialog.showOpenDialog(this);
-			if (izbira == JFileChooser.APPROVE_OPTION) {
-				dialog.getSelectedFile().getPath();
-
-			}
-		}
-		else if (objekt == menuShrani) {
-			JFileChooser dialog = new JFileChooser();
-			int izbira = dialog.showSaveDialog(this);
-			if (izbira == JFileChooser.APPROVE_OPTION) {
-				dialog.getSelectedFile().getPath();
-			}
-		}
-		else if (objekt == menuZapri) {
+		if (objekt == menuZapri) {
 			dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 			}
 		
@@ -267,12 +247,6 @@ public class GlavnoOknoIgre extends JFrame implements ActionListener {
 			Color barva = JColorChooser.showDialog(this, "Izberi barvo mreze", mreza.barvaRoba);
 			if (barva != null) {
 				mreza.barvaRoba = barva;
-				repaint();
-			}
-		}else if (objekt == barvaPlosce) {
-			Color barva = JColorChooser.showDialog(this, "Izberi barvo plošče", mreza.barvaMreze);
-			if (barva != null) {
-				mreza.barvaMreze = barva;
 				repaint();
 			}
 		}

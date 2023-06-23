@@ -172,19 +172,11 @@ public class Inteligenca extends KdoIgra {
 		}
 		
 		else if (Igra.velikost == 13){
-			if (igra.stevec < 110) {
-				globina = 1;
-			}
-			else if (igra.stevec >= 110) {
-				globina = 2;
-			}
+			globina = 1;
 			najboljsaPoteza = alphabeta(igra, globina,PORAZ,ZMAGA,igra.naPotezi());
 		}
 		else if (Igra.velikost == 19){
-			if (igra.stevec < 190) {
-				globina = 1;
-			}
-			else globina = 2; 
+			globina = 1; 
 			najboljsaPoteza = alphabeta(igra, globina,PORAZ,ZMAGA,igra.naPotezi());
 		}
 		System.out.println(igra.stevec);
